@@ -1,0 +1,11 @@
+# Core dependencies
+numpy>=1.24.0
+matplotlib>=3.7.0
+pillow>=10.0.0
+
+# Gymnasium framework
+gymnasium>=0.29.0
+pyyaml>=6.0
+
+# Optional: AirSim backend (requires running Unreal Engine instance)
+# pip install airsim

@@ -1,0 +1,90 @@
+# Complex Urban Scenario
+# 5 UAVs, 3 UGVs, multiple threats/victims, building obstacles, tight corridors.
+
+name: complex_urban
+bounds: [100.0, 100.0, 50.0]
+
+drone_configs:
+  - id: UAV_1
+    type: uav
+    spawn: [0.0, 0.0, 15.0]
+  - id: UAV_2
+    type: uav
+    spawn: [10.0, -10.0, 18.0]
+  - id: UAV_3
+    type: uav
+    spawn: [-10.0, 10.0, 12.0]
+  - id: UAV_4
+    type: uav
+    spawn: [20.0, 0.0, 20.0]
+  - id: UAV_5
+    type: uav
+    spawn: [-20.0, -20.0, 14.0]
+  - id: UGV_1
+    type: ugv
+    spawn: [0.0, 20.0, 0.0]
+  - id: UGV_2
+    type: ugv
+    spawn: [-15.0, -15.0, 0.0]
+  - id: UGV_3
+    type: ugv
+    spawn: [25.0, 25.0, 0.0]
+
+obstacles:
+  - name: Tower Alpha
+    position: [30.0, 30.0, 15.0]
+    radius: 8.0
+    obstacle_type: building
+  - name: Tower Beta
+    position: [-25.0, 40.0, 12.0]
+    radius: 6.0
+    obstacle_type: building
+  - name: Tower Gamma
+    position: [15.0, -30.0, 10.0]
+    radius: 7.0
+    obstacle_type: building
+  - name: Central Plaza NFZ
+    position: [0.0, 0.0, 10.0]
+    radius: 12.0
+    obstacle_type: no_fly_zone
+  - name: Power Station
+    position: [-40.0, -10.0, 5.0]
+    radius: 10.0
+    obstacle_type: no_fly_zone
+  - name: Bridge Support
+    position: [50.0, 0.0, 3.0]
+    radius: 4.0
+    obstacle_type: building
+
+threats:
+  - id: RogueDrone_1
+    pos: [40.0, 40.0, 25.0]
+    type: rogue_drone
+  - id: RogueDrone_2
+    pos: [-30.0, 50.0, 18.0]
+    type: rogue_drone
+  - id: GroundIntruder
+    pos: [60.0, -20.0, 0.0]
+    type: ground_intruder
+
+victims:
+  - id: Survivor_Alpha
+    pos: [-50.0, 30.0, 0.0]
+    urgency: 10
+  - id: Survivor_Beta
+    pos: [70.0, 70.0, 0.0]
+    urgency: 7
+  - id: Survivor_Gamma
+    pos: [-60.0, -60.0, 0.0]
+    urgency: 9
+
+restricted_zones:
+  - pos: [0.0, 0.0, 10.0]
+    radius: 12.0
+  - pos: [-40.0, -10.0, 5.0]
+    radius: 10.0
+
+wind_vector: [1.0, 0.5, -0.2]
+max_steps: 1000
+dt: 0.1
+camera_resolution: [84, 84]

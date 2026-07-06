@@ -1,0 +1,24 @@
+
+
+services:
+  trishield-sim:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: trishield_simulation
+    # Volume mapping ensures the generated Python GIF is pushed back to the host machine
+    volumes:
+      - ./artifacts:/app/artifacts
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  trishield-ros2:
+    build:
+      context: .
+      dockerfile: Dockerfile.ros2
+    container_name: trishield_ros2_nodes
+    ports:
+      - "8765:8765"
+    # This automatically boots the ROS 2 backbone and prints Node logs to the terminal
+    environment:
+      - PYTHONUNBUFFERED=1

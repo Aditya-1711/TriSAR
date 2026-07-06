@@ -1,0 +1,19 @@
+FROM ros:humble-ros-base
+
+# Install ROS 2 build tools
+RUN apt-get update && apt-get install -y \
+    python3-colcon-common-extensions \
+    ros-humble-foxglove-bridge \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /ros2_ws
+
+# Copy our custom ROS 2 package and mathematical core into the container workspace
+COPY trishield_ros2/ src/trishield_ros2/
+COPY trishield_core/ src/trishield_core/
+
+# Compile the package using colcon
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --packages-select trishield_ros2"
+
+# Default behavior: Source the build environment and execute the cluster launch file!
+CMD ["/bin/bash", "-c", "source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 launch trishield_ros2 swarm_launch.py"]
