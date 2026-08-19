@@ -9,7 +9,13 @@ import glob
 import numpy as np
 
 def main():
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ablation_results"))
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    search_paths = [
+        os.path.join(root, "data", "raw", "ablation_results"),
+        os.path.join(root, "legacy_benchmarks", "ablation_results"),
+        os.path.join(root, "ablation_results")
+    ]
+    base_dir = next((p for p in search_paths if os.path.exists(p)), search_paths[0])
     variants = ["full", "no_ga", "no_repulsion", "floor"]
 
     print("=" * 70)
