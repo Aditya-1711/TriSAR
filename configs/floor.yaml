@@ -1,0 +1,38 @@
+# TriSAR experimental configuration: FLOOR
+# Condition: Greedy allocator (A = Greedy) x Repulsion disabled (R = No Repulsion)
+# The simplest baseline configuration.
+
+variant_name: floor
+allocator: greedy
+repulsion_enabled: false
+
+scenario:
+  num_drones: 5
+  num_targets: 8
+  target_types: [rooftop_rescue, ground_rescue]
+  world_size_m: [500, 500, 120]
+  spawn_formation: circular_ring
+  spawn_radius_m: 4.0
+
+# ga_allocator block intentionally omitted: allocator = greedy for this condition.
+
+pso_controller:
+  inertia_weight: 0.5
+  cognitive_coefficient: 0.5
+  social_coefficient: 0.5
+  max_velocity_mps: 15.0
+  control_frequency_hz: 10
+
+# repulsion block intentionally omitted: repulsion_enabled = false for this condition.
+
+energy_model:
+  p_hover: 0.28
+  c_drag: 7.0e-5
+  c_mass: 0.05
+  units: "percentage points per second, per corresponding unit"
+
+execution:
+  episodes: 30
+  simulation_backend: gazebo_sim_harmonic
+  bridge: persistent_udp_socket
+  source_batch_commit: "bd73c88"

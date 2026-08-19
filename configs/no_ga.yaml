@@ -1,0 +1,45 @@
+# TriSAR experimental configuration: NO_GA
+# Condition: Greedy allocator (A = Greedy) x Repulsion enabled (R = Repulsion)
+
+variant_name: no_ga
+allocator: greedy   # single-pass greedy: sorts tasks by urgency, assigns each
+                     # to the lowest-fitness available agent under the same
+                     # calculate_fitness() cost function used by the GA (see
+                     # src/allocation/greedy_allocator.py)
+repulsion_enabled: true
+
+scenario:
+  num_drones: 5
+  num_targets: 8
+  target_types: [rooftop_rescue, ground_rescue]
+  world_size_m: [500, 500, 120]
+  spawn_formation: circular_ring
+  spawn_radius_m: 4.0
+
+# ga_allocator block intentionally omitted: allocator = greedy for this condition.
+
+pso_controller:
+  inertia_weight: 0.5
+  cognitive_coefficient: 0.5
+  social_coefficient: 0.5
+  max_velocity_mps: 15.0
+  control_frequency_hz: 10
+
+repulsion:
+  drone_drone_gain: 2.0
+  drone_drone_force_cap: 10.0
+  obstacle_gain: 3.0
+  obstacle_force_cap: 15.0
+  safe_distance_m: 3.0
+
+energy_model:
+  p_hover: 0.28
+  c_drag: 7.0e-5
+  c_mass: 0.05
+  units: "percentage points per second, per corresponding unit"
+
+execution:
+  episodes: 30
+  simulation_backend: gazebo_sim_harmonic
+  bridge: persistent_udp_socket
+  source_batch_commit: "bd73c88"

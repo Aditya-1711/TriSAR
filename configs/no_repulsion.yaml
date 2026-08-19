@@ -1,0 +1,50 @@
+# TriSAR experimental configuration: NO_REPULSION
+# Condition: GA allocator (A = GA) x Repulsion disabled (R = No Repulsion)
+
+variant_name: no_repulsion
+allocator: ga
+repulsion_enabled: false
+
+scenario:
+  num_drones: 5
+  num_targets: 8
+  target_types: [rooftop_rescue, ground_rescue]
+  world_size_m: [500, 500, 120]
+  spawn_formation: circular_ring
+  spawn_radius_m: 4.0
+
+ga_allocator:
+  encoding: permutation_priority
+  selection: tournament
+  tournament_size: 3
+  crossover: partially_matched_crossover
+  crossover_probability: 0.85
+  mutation: per_gene_swap
+  mutation_probability: 0.15
+  elitism_count: 2
+  population_size: 40
+  max_generations: 100
+  early_stopping_generations: 15
+  random_seed_policy: null
+
+pso_controller:
+  inertia_weight: 0.5
+  cognitive_coefficient: 0.5
+  social_coefficient: 0.5
+  max_velocity_mps: 15.0
+  control_frequency_hz: 10
+
+# repulsion block intentionally omitted: repulsion_enabled = false for this condition.
+# The PSO velocity update runs with inertia + cognitive + social terms only.
+
+energy_model:
+  p_hover: 0.28
+  c_drag: 7.0e-5
+  c_mass: 0.05
+  units: "percentage points per second, per corresponding unit"
+
+execution:
+  episodes: 30
+  simulation_backend: gazebo_sim_harmonic
+  bridge: persistent_udp_socket
+  source_batch_commit: "bd73c88"
