@@ -62,7 +62,7 @@ class MissionReward(RewardFunction):
         collision_penalty: float = -20.0,
         energy_penalty_weight: float = 0.1,
         time_penalty: float = -0.1,
-        completion_distance: float = 3.0,
+        completion_distance: float = 2.0,
     ):
         self.proximity_weight = proximity_weight
         self.completion_bonus = completion_bonus

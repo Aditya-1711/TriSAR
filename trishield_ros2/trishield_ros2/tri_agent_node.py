@@ -11,7 +11,7 @@ import time
 import numpy as np
 
 sys.path.append('/ros2_ws/src/')
-from trishield_core.agent import UAVAgent, UGVAgent
+from trishield_core.agent import UAVAgent
 from trishield_core.pso_optimizer import PSOOptimizer
 
 class AgentNode(Node):
@@ -25,19 +25,15 @@ class AgentNode(Node):
         self.declare_parameter('start_z', 10.0)
         
         self.agent_id = self.get_parameter('agent_id').get_parameter_value().string_value
-        self.agent_type = self.get_parameter('agent_type').get_parameter_value().string_value
+        self.agent_type = 'UAVAgent'
         sx = self.get_parameter('start_x').get_parameter_value().double_value
         sy = self.get_parameter('start_y').get_parameter_value().double_value
         sz = self.get_parameter('start_z').get_parameter_value().double_value
         
-        self.get_logger().info(f"Initializing {self.agent_type}: {self.agent_id} at {[sx, sy, sz]}")
+        self.get_logger().info(f"Initializing UAV Drone: {self.agent_id} at {[sx, sy, sz]}")
         
-        if self.agent_type == 'UAVAgent':
-            self.math_agent = UAVAgent(self.agent_id, [sx, sy, sz])
-            self.c_r, self.c_g, self.c_b = 0.0, 0.0, 1.0 # Blue
-        else:
-            self.math_agent = UGVAgent(self.agent_id, [sx, sy, sz])
-            self.c_r, self.c_g, self.c_b = 0.0, 1.0, 0.0 # Green
+        self.math_agent = UAVAgent(self.agent_id, [sx, sy, sz])
+        self.c_r, self.c_g, self.c_b = 0.0, 0.0, 1.0 # Blue for UAV Drones
             
         self.pso = PSOOptimizer(safe_distance=3.0)
         
@@ -110,7 +106,7 @@ class AgentNode(Node):
         peers = []
         for aid, pos in self.peer_positions.items():
             if aid != self.agent_id:
-                dummy = UAVAgent(aid, pos) if 'UAV' in aid else UGVAgent(aid, pos)
+                dummy = UAVAgent(aid, pos)
                 dummy.pos = np.array(pos)
                 peers.append(dummy)
                 

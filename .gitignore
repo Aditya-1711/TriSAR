@@ -38,4 +38,25 @@ venv.bak/
 # Project specific
 artifacts/
 AirSim_Blocks/
-Blocks.zip
+logs/
+log/
+
+# Legacy local files preserved on disk but omitted from GitHub repository
+trishield_core/
+trishield_gym/
+trishield_hardware_deploy/
+trishield_ros2/
+HOW_TO_RUN.md
+data_dictionary.md
+default.sdf
+docker-compose.yml
+Screenshots/
+
+# Personal coursework documents preserved locally but omitted from GitHub
+docs/*.docx
+docs/*.pdf
+docs/N1411721_*
+docs/Report*
+docs/TriSAR_Progress*
+docs/progress_report*
+docs/TriShield_Project_r1

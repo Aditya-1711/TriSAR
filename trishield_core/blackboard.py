@@ -1,6 +1,6 @@
 class Blackboard:
     def __init__(self):
-        self.threats = {}       # id -> {'pos': [x,y,z], 'type': 'rogue_drone'}
+        self.threats = {}       # id -> {'pos': [x,y,z], 'type': 'rooftop_rescue'}
         self.victims = {}       # id -> {'pos': [x,y,z], 'type': 'human'}
         self.agent_states = {}  # agent_id -> Agent object reference
         

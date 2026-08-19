@@ -25,13 +25,16 @@ def create_backend(backend_name: str, **kwargs) -> SimBackend:
     if backend_name == "lightweight":
         from trishield_gym.backends.lightweight import LightweightBackend
         return LightweightBackend(**kwargs)
+    elif backend_name == "gazebo":
+        from trishield_gym.backends.gazebo_backend import GazeboBackend
+        return GazeboBackend(**kwargs)
     elif backend_name == "airsim":
         from trishield_gym.backends.airsim_backend import AirSimBackend
         return AirSimBackend(**kwargs)
     else:
         raise ValueError(
             f"Unknown backend '{backend_name}'. "
-            f"Available backends: 'lightweight', 'airsim'"
+            f"Available backends: 'lightweight', 'gazebo', 'airsim'"
         )
 
 

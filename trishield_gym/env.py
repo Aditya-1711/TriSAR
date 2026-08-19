@@ -88,6 +88,12 @@ class DroneSwarmEnv(gym.Env):
         # Step tracking
         self._current_step = 0
         self._current_states: dict[str, DroneState] = {}
+        self.completed_threats = set()
+        self.completed_victims = set()
+
+        # 2D SLAM & Trajectory Visualizer
+        from trishield_gym.slam_visualizer import SwarmSLAMVisualizer
+        self.slam_visualizer = SwarmSLAMVisualizer(bounds=(self.map_config.bounds[0], self.map_config.bounds[1]), interactive=False)
 
         # ---- Define spaces ----
         self._define_spaces()
@@ -162,6 +168,14 @@ class DroneSwarmEnv(gym.Env):
         """
         super().reset(seed=seed)
         self._current_step = 0
+        self.completed_threats.clear()
+        self.completed_victims.clear()
+
+        # Randomize target positions and environmental factors
+        if hasattr(self.map_config, "randomize_targets"):
+            self.map_config.randomize_targets()
+        else:
+            self.map_config.randomize(seed=seed)
 
         # Reset backend
         self._current_states = self._backend.reset(self.map_config)
@@ -214,6 +228,12 @@ class DroneSwarmEnv(gym.Env):
 
         # Build observations
         obs = self._build_observations(self._current_states)
+
+        # Record 3D Trajectory & SLAM steps
+        drone_poses = {did: s.position.tolist() for did, s in self._current_states.items()}
+        ugv_poses = [u['pos'] for u in self.map_config.charging_stations]
+        if hasattr(self, 'traj_visualizer'):
+            self.traj_visualizer.record_step(drone_poses, ugv_poses, targets=self.map_config.victims)
 
         # Enrich info
         info["step"] = self._current_step
@@ -352,31 +372,63 @@ class DroneSwarmEnv(gym.Env):
             return True
 
         # All targets reached → terminate
-        completion_dist = 3.0
-        all_threats_handled = True
-        all_victims_rescued = True
+        completion_dist = 2.0
 
         for threat in self.map_config.threats:
+            tid = threat.get("id", str(threat["pos"]))
+            if tid in self.completed_threats:
+                continue
             threat_pos = np.array(threat["pos"])
             reached = any(
                 np.linalg.norm(s.position - threat_pos) < completion_dist
                 for s in self._current_states.values()
                 if s.drone_type == "uav"
             )
-            if not reached:
-                all_threats_handled = False
+            if reached:
+                self.completed_threats.add(tid)
 
         for victim in self.map_config.victims:
+            vid = victim.get("id", str(victim["pos"]))
+            if vid in self.completed_victims:
+                continue
             victim_pos = np.array(victim["pos"])
             reached = any(
                 np.linalg.norm(s.position - victim_pos) < completion_dist
                 for s in self._current_states.values()
             )
-            if not reached:
-                all_victims_rescued = False
+            if reached:
+                self.completed_victims.add(vid)
+
+        all_threats_handled = (len(self.completed_threats) >= len(self.map_config.threats))
+        all_victims_rescued = (len(self.completed_victims) >= len(self.map_config.victims))
 
         if all_threats_handled and all_victims_rescued:
             self.logger.mission_completed = True
             return True
 
         return False
+
+    def save_slam_map(self, filepath=None):
+        """Save a timestamped high-resolution SLAM occupancy map image artifact."""
+        from datetime import datetime
+        if filepath is None:
+            os.makedirs("logs", exist_ok=True)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filepath = f"logs/slam_map_episode_{timestamp}.png"
+        try:
+            if hasattr(self, 'slam_visualizer'):
+                self.slam_visualizer.save_map(filepath)
+        except Exception as e:
+            pass
+        return filepath
+
+    def close(self):
+        """Close the environment and save SLAM map and metrics report artifacts."""
+        from datetime import datetime
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        try:
+            self.save_slam_map(f"logs/slam_map_episode_{ts}.png")
+        except Exception as e:
+            pass
+        if hasattr(self._backend, 'close'):
+            self._backend.close()

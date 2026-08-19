@@ -153,7 +153,7 @@ This boots:
 | Container               | What it does                                  |
 | ----------------------- | --------------------------------------------- |
 | `trishield_simulation`  | Runs the core Python simulation → outputs GIF |
-| `trishield_ros2_nodes`  | Launches the full ROS 2 swarm (5 UAVs + 3 UGVs) with Foxglove bridge on port `8765` |
+| `trishield_ros2_nodes`  | Launches the full ROS 2 drone swarm (5 UAV Drones) with Foxglove bridge on port `8765` |
 
 ### Stop everything
 
@@ -197,17 +197,44 @@ ros2 launch trishield_ros2 swarm_launch.py
 | `foxglove_bridge`    | 1     | WebSocket bridge for 3D visualization on port 8765 |
 | `global_blackboard`  | 1     | Shared distributed blackboard for inter-agent comms |
 | `uav_X_controller`   | 5     | Aerial drone agents (UAV)                        |
-| `ugv_X_controller`   | 3     | Ground robot agents (UGV)                        |
 
 ### Connect Foxglove Studio for 3D visualization
 
 1. Download [Foxglove Studio](https://foxglove.dev/download).
 2. Open it and connect to: `ws://localhost:8765`
-3. You will see live ROS 2 topic data from all 8 agents in real time.
+3. You will see live 3D drone topic data and trajectories from all 5 UAV drones in real time.
 
 ---
 
-## 7. Viewing the Output
+## 7. How to Open the Simulation Live in Gazebo GUI
+
+### Method A: Gazebo GUI via WSL2 / Ubuntu Linux (Recommended for Windows)
+
+If you are using Windows with WSL2 (Ubuntu), you can open the Gazebo GUI window directly:
+
+```bash
+# 1. Open WSL2 (Ubuntu) terminal
+wsl
+
+# 2. Launch Gazebo Harmonic with the disaster world
+gz sim "trishield_hardware_deploy/worlds/disaster.sdf"
+```
+*Windows WSLg automatically pops up the native Gazebo 3D rendering window showing collapsed building structures, fire, and smoke plumes.*
+
+### Method B: Gazebo Swarm Launch with ROS 2 (Ubuntu 22.04 / Linux)
+
+```bash
+# Source ROS 2 Humble
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+
+# Launch Gazebo GUI + 5 PX4 SITL quadcopters + RViz2
+ros2 launch trishield_hardware_deploy gazebo_swarm.launch.py
+```
+
+---
+
+## 8. Viewing the Output
 
 ### Simulation GIF
 

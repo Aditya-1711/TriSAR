@@ -1,0 +1,6 @@
+run_id,success,total_steps,total_reward,total_path_length,total_collisions,total_energy_consumed,wall_time_seconds
+1,True,112,-485.09,691.43,0,77.3,3.8
+2,True,53,-130.84,338.24,0,46.39,2.12
+3,True,65,-204.97,478.98,0,57.29,1.99
+4,True,53,-131.54,338.32,0,46.94,1.86
+5,True,76,-229.87,475.71,0,55.28,1.85

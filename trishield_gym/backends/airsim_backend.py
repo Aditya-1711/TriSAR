@@ -38,12 +38,13 @@ class AirSimBackend(SimBackend):
         is created. Install with: pip install airsim
     """
 
-    def __init__(self, ip: str = "127.0.0.1", port: int = 41451):
+    def __init__(self, ip: str = "127.0.0.1", port: int = 41451, enable_cameras: bool = True):
         """Initialize AirSim connection parameters.
 
         Args:
             ip: IP address of the AirSim instance.
             port: Port number for the AirSim API.
+            enable_cameras: Whether to fetch RGB images from AirSim. Set to False for massive speedups.
         """
         if not AIRSIM_AVAILABLE:
             raise ImportError(
@@ -62,6 +63,7 @@ class AirSimBackend(SimBackend):
         self._step_count: int = 0
         self._batteries: dict[str, float] = {}  # Simulated battery (AirSim lacks this)
         self._max_speeds: dict[str, float] = {}
+        self.enable_cameras = enable_cameras
 
     # ------------------------------------------------------------------ #
     #  Lifecycle
@@ -84,6 +86,21 @@ class AirSimBackend(SimBackend):
         print("  [DEBUG] Resetting AirSim...")
         self.client.reset()
         time.sleep(1.0)  # Allow reset to complete
+
+        # Apply weather and wind
+        try:
+            self.client.simEnableWeather(True)
+            if hasattr(self.map_config, "weather_params"):
+                for param, value in self.map_config.weather_params.items():
+                    if hasattr(airsim.WeatherParameter, param):
+                        weather_enum = getattr(airsim.WeatherParameter, param)
+                        self.client.simSetWeatherParameter(weather_enum, float(value))
+            
+            if hasattr(self.map_config, "wind_vector"):
+                wv = self.map_config.wind_vector
+                self.client.simSetWind(airsim.Vector3r(wv[0], wv[1], wv[2]))
+        except Exception as e:
+            print(f"  [DEBUG] Could not set weather/wind in AirSim: {e}")
 
         self.vehicle_names = [dc["id"] for dc in map_config.drone_configs]
         self.trails = {name: [] for name in self.vehicle_names}
@@ -113,7 +130,40 @@ class AirSimBackend(SimBackend):
                 print(f"  [DEBUG] Warning: Takeoff join failed: {e}")
         
         print("  [DEBUG] Fetching initial observations...")
+        self._plot_targets()
         return self.get_observations()
+
+    def _plot_targets(self):
+        """Plot markers for threats and victims in the AirSim environment."""
+        if not self.map_config:
+            return
+
+        try:
+            # Clear old markers from previous runs
+            self.client.simFlushPersistentMarkers()
+
+            strings = []
+            positions = []
+            
+            for victim in self.map_config.victims:
+                strings.append(victim["id"])
+                pos = victim["pos"]
+                # Convert ENU to AirSim's NED (invert Z)
+                positions.append(airsim.Vector3r(pos[0], pos[1], -pos[2]))
+                
+            for threat in self.map_config.threats:
+                strings.append(threat["id"])
+                pos = threat["pos"]
+                positions.append(airsim.Vector3r(pos[0], pos[1], -pos[2]))
+                
+            if strings:
+                color = [1.0, 0.2, 0.2, 1.0] # Light Red list instead of ColorRGBA
+                # Plot text labels (scale=1.5, duration=600 seconds)
+                self.client.simPlotStrings(strings, positions, scale=1.5, color_rgba=color, duration=600.0)
+                # Plot physical spheres/points to mark the exact spot
+                self.client.simPlotPoints(positions, size=30.0, color_rgba=color, is_persistent=False, duration=600.0)
+        except Exception as e:
+            print(f"  [DEBUG] Could not plot targets in AirSim: {e}")
 
     def close(self) -> None:
         """Disarm all vehicles and disconnect from AirSim."""
@@ -178,7 +228,11 @@ class AirSimBackend(SimBackend):
             self._batteries[drone_id] = max(0.0, self._batteries[drone_id])
 
         # Wait for all movement commands to complete
-        time.sleep(dt)
+        for future in futures:
+            try:
+                future.join()
+            except Exception:
+                pass
 
         # Update trails and check collisions
         states = self.get_observations()
@@ -212,8 +266,12 @@ class AirSimBackend(SimBackend):
                 position = np.array([pos.x_val, pos.y_val, -pos.z_val])
                 velocity = np.array([vel.x_val, vel.y_val, -vel.z_val])
 
-                # Capture camera image
-                camera_img = self._get_camera_image(drone_id)
+                # Capture camera image only if enabled (saves massive RPC time)
+                if self.enable_cameras:
+                    camera_img = self._get_camera_image(drone_id)
+                else:
+                    res = self.map_config.camera_resolution if self.map_config else (84, 84)
+                    camera_img = np.zeros((res[1], res[0], 3), dtype=np.uint8)
 
                 # Determine mission status from battery
                 battery = self._batteries.get(drone_id, 100.0)

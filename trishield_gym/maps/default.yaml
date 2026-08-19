@@ -1,5 +1,4 @@
-# TriShield Default Scenario
-# Matches the original simulation.py: 3 UAVs, 2 UGVs, 1 threat, 1 victim.
+# TriShield Default Scenario: 5 UAV Drones, 1 victim.
 
 name: trishield_default
 bounds: [25.0, 25.0, 20.0]  # Half-extents [x, y, z]
@@ -31,14 +30,11 @@ obstacles:
     radius: 8.0
     obstacle_type: no_fly_zone
 
-threats:
-  - id: RogueDrone
-    pos: [20.0, 20.0, 15.0]
-    type: rogue_drone
+threats: []
 
 victims:
   - id: Survivor
-    pos: [-15.0, 15.0, 0.0]
+    pos: [-15.0, 15.0, 2.0]
     urgency: 10
 
 restricted_zones:

@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "TriSAR: Evaluating GA Task Allocation and PSO-Based Reactive Collision Avoidance in Multi-UAV Disaster Response"
+authors:
+  - family-names: "Kapile"
+    given-names: "Aditya Anil"
+    affiliation: "Nottingham Trent University"
+  - family-names: "Kennedy"
+    given-names: "Isibor"
+    affiliation: "Nottingham Trent University"
+  - family-names: "Machado"
+    given-names: "Pedro"
+    affiliation: "Nottingham Trent University"
+repository-code: "https://github.com/Aditya-1711/TriSAR"
+license: MIT
+version: 1.0.0
+date-released: 2026-08-23
+preferred-citation:
+  type: conference-paper
+  title: "TriSAR: Evaluating GA Task Allocation and PSO-Based Reactive Collision Avoidance in Multi-UAV Disaster Response"
+  authors:
+    - family-names: "Kapile"
+      given-names: "Aditya Anil"
+    - family-names: "Kennedy"
+      given-names: "Isibor"
+    - family-names: "Machado"
+      given-names: "Pedro"
+  conference:
+    name: "Towards Autonomous Robotic Systems (TAROS) 2026"
+  year: 2026

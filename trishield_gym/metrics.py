@@ -119,23 +119,21 @@ class MetricsLogger:
             if drone_id in self.drone_metrics:
                 self.drone_metrics[drone_id].update(state, collisions)
 
+    def set_allocation_time(self, time_ms: float):
+        """Record allocator computation time in milliseconds."""
+        self.ga_allocation_time_ms = round(float(time_ms), 3)
+
     def get_summary(self) -> dict:
-        """Return a summary of the episode metrics.
-
-        Returns:
-            Dictionary with episode-level and per-drone metrics.
-        """
+        """Return a summary of the episode metrics."""
         elapsed = time.time() - self.episode_start_time
-
-        # Finalize per-drone metrics
-        for dm in self.drone_metrics.values():
-            dm.finalize()
 
         drone_summaries = {}
         for did, dm in self.drone_metrics.items():
+            dm.finalize()
             drone_summaries[did] = {
                 "path_length": round(dm.total_path_length, 2),
                 "collisions": dm.total_collisions,
+                "collision_events": dm.collision_events,
                 "energy_consumed": round(dm.energy_consumed, 2),
                 "final_battery": round(dm.final_battery, 2),
                 "average_speed": round(dm.average_speed, 2),
@@ -147,16 +145,20 @@ class MetricsLogger:
         total_path = sum(dm.total_path_length for dm in self.drone_metrics.values())
         total_energy = sum(dm.energy_consumed for dm in self.drone_metrics.values())
 
+        ep_summary = {
+            "total_steps": self.total_steps,
+            "total_reward": round(self.total_reward, 2),
+            "total_path_length": round(total_path, 2),
+            "total_collisions": total_collisions,
+            "total_energy_consumed": round(total_energy, 2),
+            "mission_completed": self.mission_completed,
+            "wall_time_seconds": round(elapsed, 2),
+        }
+        if hasattr(self, 'ga_allocation_time_ms') and self.ga_allocation_time_ms is not None:
+            ep_summary["ga_allocation_time_ms"] = self.ga_allocation_time_ms
+
         return {
-            "episode": {
-                "total_steps": self.total_steps,
-                "total_reward": round(self.total_reward, 2),
-                "total_path_length": round(total_path, 2),
-                "total_collisions": total_collisions,
-                "total_energy_consumed": round(total_energy, 2),
-                "mission_completed": self.mission_completed,
-                "wall_time_seconds": round(elapsed, 2),
-            },
+            "episode": ep_summary,
             "drones": drone_summaries,
         }
 

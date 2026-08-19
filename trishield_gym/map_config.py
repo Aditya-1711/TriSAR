@@ -50,7 +50,9 @@ class MapConfig:
     threats: list[dict] = field(default_factory=list)    # {'id': ..., 'pos': ..., 'type': ...}
     victims: list[dict] = field(default_factory=list)    # {'id': ..., 'pos': ..., 'urgency': ...}
     restricted_zones: list[dict] = field(default_factory=list)  # {'pos': ..., 'radius': ...}
+    charging_stations: list[dict] = field(default_factory=list) # [{'id': ..., 'pos': ...}]
     wind_vector: list[float] = field(default_factory=lambda: [0.0, 0.0, 0.0])
+    weather_params: dict[str, float] = field(default_factory=dict)  # e.g., {'Rain': 0.0, 'Snow': 0.0, 'Fog': 0.0}
 
     # Simulation parameters
     max_steps: int = 500
@@ -88,26 +90,73 @@ class MapConfig:
             for o in data.get("obstacles", [])
         ]
 
+        charging_stations = data.get("charging_stations", [])
+        
         return cls(
             name=data.get("name", "unnamed"),
-            bounds=tuple(data.get("bounds", [50.0, 50.0, 30.0])),
+            bounds=tuple(data.get("bounds", [75.0, 75.0, 40.0])),
             drone_configs=data.get("drone_configs", []),
             obstacles=obstacles,
             threats=data.get("threats", []),
             victims=data.get("victims", []),
             restricted_zones=data.get("restricted_zones", []),
+            charging_stations=charging_stations,
             wind_vector=data.get("wind_vector", [0.0, 0.0, 0.0]),
+            weather_params=data.get("weather_params", {}),
             max_steps=data.get("max_steps", 500),
             dt=data.get("dt", 0.1),
             camera_resolution=tuple(data.get("camera_resolution", [84, 84])),
         )
+
+    def randomize_targets(self, rng=None):
+        """Randomize positions of victims while constraining them strictly to open street corridors or rooftop elevations."""
+        import numpy as np
+        import math
+        if rng is None:
+            rng = np.random.default_rng()
+
+        # Constrain drone circular spawn helipad on open main avenue (X ~ 0, Y ~ -15)
+        cx = 0.0
+        cy = -15.0
+        base_z = 10.0
+        radius = 4.0
+
+        num_drones = len(self.drone_configs)
+        for i, dc in enumerate(self.drone_configs):
+            angle = (2.0 * math.pi * i) / max(1, num_drones)
+            dx = round(cx + radius * math.cos(angle), 2)
+            dy = round(cy + radius * math.sin(angle), 2)
+            dz = round(base_z + (i * 0.5), 2)
+            dc["spawn"] = [dx, dy, dz]
+
+        # Constrain survivor search targets across open street avenues & accessible rooftop elevations
+        street_points = [
+            [25.0, 25.0, 33.0],   # Office Tower 1 Rooftop (33m elevation)
+            [-25.0, 25.0, 33.0],  # Office Tower 2 Rooftop (33m elevation)
+            [25.0, -25.0, 33.0],  # Office Tower 3 Rooftop (33m elevation)
+            [-25.0, -25.0, 33.0], # Office Tower 4 Rooftop (33m elevation)
+            [0.0, 35.0, 3.0],     # Open Main Avenue North
+            [35.0, 0.0, 3.0],     # Open Main Avenue East
+            [-35.0, 0.0, 3.0],    # Open Main Avenue West
+            [0.0, -35.0, 3.0],    # Open Main Avenue South
+        ]
+
+        for i, victim in enumerate(self.victims):
+            sp = street_points[i % len(street_points)]
+            # Add small random jitter within open street bounds (+/- 2.0m)
+            rx = round(float(sp[0] + rng.uniform(-2.0, 2.0) if sp[2] < 10 else sp[0]), 2)
+            ry = round(float(sp[1] + rng.uniform(-2.0, 2.0) if sp[2] < 10 else sp[1]), 2)
+            rz = sp[2]
+            victim['pos'] = [rx, ry, rz]
+
+        self.threats = []
 
     @classmethod
     def default_trishield(cls) -> "MapConfig":
         """Factory for the standard TriShield scenario.
 
         Matches the original simulation.py setup: 3 UAVs, 2 UGVs,
-        1 rogue drone threat, 1 survivor victim.
+        1 rooftop survivor rescue, 1 survivor victim.
         """
         return cls(
             name="trishield_default",
@@ -125,18 +174,79 @@ class MapConfig:
                 Obstacle([-10.0, -5.0, 0.0], radius=8.0, obstacle_type="no_fly_zone",
                          name="Southern NFZ"),
             ],
-            threats=[
-                {"id": "DefencePerimeter", "pos": [18.0, -18.0, 8.0], "type": "chokepoint"},
-            ],
+            threats=[],
             victims=[
-                {"id": "LocateSurvivor", "pos": [-15.0, 18.0, 0.0], "urgency": 10},
-                {"id": "DeliverFirstAid", "pos": [-14.0, 17.0, 1.0], "urgency": 8},
+                {"id": "LocateSurvivor", "pos": [-15.0, 18.0, 2.0], "urgency": 10},
+                {"id": "DeliverFirstAid", "pos": [-10.0, 18.0, 2.0], "urgency": 8},
                 {"id": "MapEnvironment", "pos": [0.0, 15.0, 18.0], "urgency": 5},
+                {"id": "EstablishCommsRelay", "pos": [15.0, 0.0, 10.0], "urgency": 7},
+                {"id": "InspectDamage", "pos": [5.0, -15.0, 8.0], "urgency": 6},
             ],
             wind_vector=[0.5, 0.2, 0.0],
+            weather_params={"Rain": 0.0, "Snow": 0.0, "Fog": 0.0},
             max_steps=500,
             dt=0.1,
         )
+
+    def randomize(self, seed: Optional[int] = None):
+        """Randomize targets, wind, and weather for the scenario.
+        
+        Args:
+            seed: Optional random seed for reproducibility.
+        """
+        import random
+        if seed is not None:
+            random.seed(seed)
+            
+        bx, by, bz = self.bounds
+        
+        def get_valid_pos():
+            while True:
+                pos = [
+                    random.uniform(-bx * 0.75, bx * 0.75),
+                    random.uniform(-by * 0.75, by * 0.75),
+                    random.uniform(0.0, bz * 0.8)
+                ]
+                # Check against obstacles (with a 1.0m padding to ensure it's reachable)
+                valid = True
+                for obs in self.obstacles:
+                    dist = ((pos[0] - obs.position[0])**2 + (pos[1] - obs.position[1])**2)**0.5
+                    if dist <= obs.radius + 1.0:
+                        valid = False
+                        break
+                if valid:
+                    return pos
+
+        # Jitter threats
+        for threat in self.threats:
+            threat["pos"] = get_valid_pos()
+            
+        # Jitter victims
+        for victim in self.victims:
+            victim["pos"] = get_valid_pos()
+            
+        # Randomize wind vector (X, Y components, minimal Z)
+        self.wind_vector = [
+            random.uniform(-2.0, 2.0),
+            random.uniform(-2.0, 2.0),
+            random.uniform(-0.2, 0.2)
+        ]
+        
+        # Pick a single dominant weather type or "Clear"
+        weather_choice = random.choice(["Rain", "Snow", "Fog", "Clear"])
+        
+        self.weather_params = {
+            "Rain": 0.0,
+            "Snow": 0.0,
+            "Fog": 0.0,
+        }
+        
+        if weather_choice == "Rain":
+            self.weather_params["Rain"] = random.uniform(0.2, 0.8)
+        elif weather_choice == "Snow":
+            self.weather_params["Snow"] = random.uniform(0.1, 0.5)
+        elif weather_choice == "Fog":
+            self.weather_params["Fog"] = random.uniform(0.1, 0.4)
 
     @property
     def drone_ids(self) -> list[str]:

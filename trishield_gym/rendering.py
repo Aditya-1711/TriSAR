@@ -106,15 +106,10 @@ class SimRenderer:
 
         # -- Draw drones --
         drone_states: dict[str, DroneState] = render_data.get("drone_states", {})
-        uav_positions, ugv_positions = [], []
+        uav_positions = []
         for drone_id, state in drone_states.items():
             pos = state.position
-            is_uav = state.drone_type == "uav"
-
-            if is_uav:
-                uav_positions.append(pos)
-            else:
-                ugv_positions.append(pos)
+            uav_positions.append(pos)
 
             # Battery label
             battery_text = f"{state.battery:.0f}%"
@@ -136,14 +131,7 @@ class SimRenderer:
             uav_arr = np.array(uav_positions)
             self.ax.scatter(
                 uav_arr[:, 0], uav_arr[:, 1], uav_arr[:, 2],
-                c="dodgerblue", marker="^", s=100, label="UAV",
-                edgecolors="white", linewidths=0.5,
-            )
-        if ugv_positions:
-            ugv_arr = np.array(ugv_positions)
-            self.ax.scatter(
-                ugv_arr[:, 0], ugv_arr[:, 1], ugv_arr[:, 2],
-                c="limegreen", marker="s", s=100, label="UGV",
+                c="dodgerblue", marker="^", s=100, label="UAV Drone",
                 edgecolors="white", linewidths=0.5,
             )
 

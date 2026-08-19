@@ -22,7 +22,6 @@ def generate_launch_description():
     
     # 3. Deploy Configurable Drones dynamically
     UAV_COUNT = 5
-    UGV_COUNT = 3
     
     for i in range(1, UAV_COUNT + 1):
         # Evenly space them along the X axis, shifted slightly back
@@ -38,28 +37,6 @@ def generate_launch_description():
                 parameters=[{
                     'agent_id': f'UAV_{i}', 
                     'agent_type': 'UAVAgent',
-                    'start_x': start_x,
-                    'start_y': start_y,
-                    'start_z': start_z,
-                }],
-                output='screen'
-            )
-        )
-        
-    for i in range(1, UGV_COUNT + 1):
-        # Spawn UGVs on the other side
-        start_x = float((i - UGV_COUNT/2) * 5.0)
-        start_y = 10.0
-        start_z = 0.0
-        
-        nodes.append(
-            Node(
-                package='trishield_ros2',
-                executable='tri_agent_node',
-                name=f'ugv_{i}_controller',
-                parameters=[{
-                    'agent_id': f'UGV_{i}', 
-                    'agent_type': 'UGVAgent',
                     'start_x': start_x,
                     'start_y': start_y,
                     'start_z': start_z,

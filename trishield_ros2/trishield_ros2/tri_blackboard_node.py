@@ -10,7 +10,7 @@ import numpy as np
 sys.path.append('/ros2_ws/src/')
 from trishield_core.blackboard import Blackboard
 from trishield_core.ga_allocator import HeterogeneousGA
-from trishield_core.agent import UAVAgent, UGVAgent
+from trishield_core.agent import UAVAgent
 
 class BlackboardNode(Node):
     def __init__(self):
@@ -25,8 +25,8 @@ class BlackboardNode(Node):
         self.ga = HeterogeneousGA(self.bb)
         
         # Register static environment over time
-        self.bb.register_threat("RogueDrone", [20, 20, 15], "aerial_intercept")
-        self.bb.register_threat("Intruder", [15, -15, 10], "aerial_intercept")
+        self.bb.register_threat("Trapped_Survivor_RooftopA", [20, 20, 15], "rooftop_rescue")
+        self.bb.register_threat("Trapped_Survivor_RooftopB", [15, -15, 10], "rooftop_rescue")
         self.bb.victims["Survivor_1"] = {'pos': [-15, 15, 0], 'urgency': 10}
         
         self.timer = self.create_timer(1.0, self.timer_callback)
@@ -36,17 +36,13 @@ class BlackboardNode(Node):
         try:
             state = json.loads(msg.data)
             aid = state['id']
-            atype = state['type']
             pos = state['pos']
             vel = state['vel']
             battery = state['battery']
             mission_status = state['mission_status']
             
-            # Reconstruct dummy agent for GA allocation capabilities checks
-            if atype == 'UAVAgent':
-                agent = UAVAgent(aid, pos)
-            else:
-                agent = UGVAgent(aid, pos)
+            # Reconstruct UAV drone agent
+            agent = UAVAgent(aid, pos)
             
             agent.pos = pos
             agent.vel = vel

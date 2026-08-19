@@ -35,7 +35,12 @@ def main():
         map_config=map_config,
         action_mode="velocity",
         render_mode=None,
+        enable_cameras=False,  # Massive speedup since PSO doesn't need images
     )
+
+    print("Connecting to AirSim and taking off (this takes a few seconds)...")
+    # Reset environment FIRST so targets are randomized before task allocation
+    obs, info = env.reset()
 
     # Initialize the existing trishield_core algorithms
     bb = Blackboard()
@@ -51,10 +56,10 @@ def main():
         core_agents[dc["id"]] = agent
         bb.broadcast_state(agent)
 
-    # Register threats and victims on the blackboard
-    for threat in map_config.threats:
+    # Register threats and victims on the blackboard (using updated positions)
+    for threat in env.map_config.threats:
         bb.register_threat(threat["id"], threat["pos"], threat.get("type", "unknown"))
-    for victim in map_config.victims:
+    for victim in env.map_config.victims:
         bb.register_victim(victim["id"], victim["pos"], victim.get("urgency", 5))
 
     # Run GA task allocation (one-time)
@@ -74,10 +79,6 @@ def main():
         agent.mission_status = "ACTIVE"
     print("-" * 30)
 
-    print("Connecting to AirSim and taking off (this takes a few seconds)...")
-    # Reset environment
-    obs, info = env.reset()
-
     print(f"\nRunning PSO-driven simulation for {map_config.max_steps} steps...\n")
     total_reward = 0.0
 
@@ -96,12 +97,17 @@ def main():
 
             # Compute PSO velocity using existing algorithm
             all_agents_list = list(core_agents.values())
+            # Combine restricted_zones and obstacles for collision avoidance
+            rz_list = [
+                {"pos": rz["pos"], "radius": rz["radius"]}
+                for rz in map_config.restricted_zones
+            ]
+            for obstacle in map_config.obstacles:
+                rz_list.append({"pos": obstacle.position, "radius": obstacle.radius})
+
             new_vel = pso.compute_velocity(
                 agent, all_agents_list,
-                restricted_zones=[
-                    {"pos": rz["pos"], "radius": rz["radius"]}
-                    for rz in map_config.restricted_zones
-                ],
+                restricted_zones=rz_list,
                 wind_vector=map_config.wind_vector,
             )
 

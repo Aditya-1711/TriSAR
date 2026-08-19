@@ -9,7 +9,7 @@ import os
 # Append current directory to path so trishield_core can be imported
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from trishield_core.agent import UAVAgent, UGVAgent
+from trishield_core.agent import UAVAgent
 from trishield_core.blackboard import Blackboard
 from trishield_core.ga_allocator import HeterogeneousGA
 from trishield_core.pso_optimizer import PSOOptimizer
@@ -17,28 +17,34 @@ from trishield_core.pso_optimizer import PSOOptimizer
 def main():
     bb = Blackboard()
     
-    # Initialize heterogeneous swarm (Air-Ground mesh)
+    # Initialize drone swarm
     agents = [
         UAVAgent("UAV_1", [0, 0, 10]),
         UAVAgent("UAV_2", [5, -5, 12]),
         UAVAgent("UAV_3", [-5, 5, 8]),
-        UGVAgent("UGV_1", [10, 10, 0]),
-        UGVAgent("UGV_2", [-10, -10, 0])
+        UAVAgent("UAV_4", [10, 10, 15]),
+        UAVAgent("UAV_5", [-10, -10, 6])
     ]
     
     for a in agents:
         bb.broadcast_state(a)
         
-    print("Injected Anomalies:")
-    bb.register_threat("RogueDrone", [20, 20, 15], "rogue_drone")
-    print("- Aerial Threat (Rogue Drone) at [20, 20, 15]")
-    bb.register_victim("Survivor", [-15, 15, 0], urgency=10)
-    print("- Ground Victim (Survivor) at [-15, 15, 0]")
+    print("Registered Disaster Scenario Tasks:")
+    sar_tasks = [
+        ("LocateSurvivor", [-15, 15, 0], 10),
+        ("DeliverFirstAid", [18, -12, 0], 9),
+        ("RooftopSurvivor", [20, 20, 15], 8),
+        ("CommsRelay", [-20, -15, 12], 7),
+        ("InspectDamage", [10, -18, 5], 6),
+    ]
+    for task_id, pos, urgency in sar_tasks:
+        bb.register_victim(task_id, pos, urgency=urgency)
+        print(f"- Task '{task_id}' at {pos} (Urgency: {urgency})")
     
     ga = HeterogeneousGA(bb)
     pso = PSOOptimizer(safe_distance=3.0)
     
-    # 1. Run GA Hardware-Aware Task Allocation
+    # 1. Run GA Task Allocation
     assignments = ga.allocate()
     print("\n--- GA Task Allocation ---")
     for task_id, agent_id in assignments.items():
@@ -64,19 +70,15 @@ def main():
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
-    ax.set_title("TriShield Universal Swarm: Air-Ground Cooperation")
+    ax.set_title("TriShield Autonomous Aerial Drone Swarm")
     
-    # Initialize scatter objects with starting positions to prevent matplotlib rendering bugs
+    # Initialize scatter objects
     uav_pos = np.array([a.pos for a in agents if isinstance(a, UAVAgent)])
-    ugv_pos = np.array([a.pos for a in agents if isinstance(a, UGVAgent)])
+    scatter_uav = ax.scatter(uav_pos[:,0], uav_pos[:,1], uav_pos[:,2], c='blue', marker='^', s=100, label='UAV (Drone)')
     
-    scatter_uav = ax.scatter(uav_pos[:,0], uav_pos[:,1], uav_pos[:,2], c='blue', marker='^', s=100, label='UAV (Aerial)')
-    scatter_ugv = ax.scatter(ugv_pos[:,0], ugv_pos[:,1], ugv_pos[:,2], c='green', marker='s', s=100, label='UGV (Ground)')
-    
-    t_pos = bb.threats["RogueDrone"]['pos']
-    v_pos = bb.victims["Survivor"]['pos']
-    ax.scatter(t_pos[0], t_pos[1], t_pos[2], c='red', marker='x', s=100, label='RogueDrone')
-    ax.scatter(v_pos[0], v_pos[1], v_pos[2], c='orange', marker='*', s=150, label='Survivor')
+    for vid, v in bb.victims.items():
+        v_pos = v['pos']
+        ax.scatter(v_pos[0], v_pos[1], v_pos[2], c='orange', marker='*', s=150, label=f'Task: {vid}')
     
     ax.legend(loc="upper left")
     
@@ -89,7 +91,7 @@ def main():
             a.update_position(dt)
             bb.broadcast_state(a)
 
-        # Clear and redraw — the only reliable way to update 3D scatter plots
+        # Clear and redraw
         ax.cla()
         ax.set_xlim([-25, 25])
         ax.set_ylim([-25, 25])
@@ -97,17 +99,15 @@ def main():
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
-        ax.set_title(f"TriShield Swarm — Frame {frame + 1}/100")
+        ax.set_title(f"TriShield Drone Swarm — Frame {frame + 1}/100")
 
         uav_pos = np.array([a.pos for a in agents if isinstance(a, UAVAgent)])
-        ugv_pos = np.array([a.pos for a in agents if isinstance(a, UGVAgent)])
+        ax.scatter(uav_pos[:,0], uav_pos[:,1], uav_pos[:,2], c='blue', marker='^', s=100, label='UAV (Drone)')
 
-        ax.scatter(uav_pos[:,0], uav_pos[:,1], uav_pos[:,2], c='blue', marker='^', s=100, label='UAV (Aerial)')
-        ax.scatter(ugv_pos[:,0], ugv_pos[:,1], ugv_pos[:,2], c='green', marker='s', s=100, label='UGV (Ground)')
-
-        # Redraw static markers
-        ax.scatter(t_pos[0], t_pos[1], t_pos[2], c='red', marker='x', s=100, label='RogueDrone')
-        ax.scatter(v_pos[0], v_pos[1], v_pos[2], c='orange', marker='*', s=150, label='Survivor')
+        # Redraw victim task markers
+        for vid, v in bb.victims.items():
+            v_pos = v['pos']
+            ax.scatter(v_pos[0], v_pos[1], v_pos[2], c='orange', marker='*', s=150, label=f'Task: {vid}')
         ax.legend(loc='upper left')
 
     # Generate animation

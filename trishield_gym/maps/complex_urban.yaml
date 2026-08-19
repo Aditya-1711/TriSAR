@@ -1,5 +1,4 @@
-# Complex Urban Scenario
-# 5 UAVs, 3 UGVs, multiple threats/victims, building obstacles, tight corridors.
+# Complex Urban Scenario: 5 UAV Drones, multiple threats/victims, building obstacles.
 
 name: complex_urban
 bounds: [100.0, 100.0, 50.0]
@@ -20,15 +19,6 @@ drone_configs:
   - id: UAV_5
     type: uav
     spawn: [-20.0, -20.0, 14.0]
-  - id: UGV_1
-    type: ugv
-    spawn: [0.0, 20.0, 0.0]
-  - id: UGV_2
-    type: ugv
-    spawn: [-15.0, -15.0, 0.0]
-  - id: UGV_3
-    type: ugv
-    spawn: [25.0, 25.0, 0.0]
 
 obstacles:
   - name: Tower Alpha
@@ -57,15 +47,15 @@ obstacles:
     obstacle_type: building
 
 threats:
-  - id: RogueDrone_1
+  - id: Trapped_Survivor_Rooftop_A
     pos: [40.0, 40.0, 25.0]
-    type: rogue_drone
-  - id: RogueDrone_2
+    type: rooftop_rescue
+  - id: Trapped_Survivor_Rooftop_B
     pos: [-30.0, 50.0, 18.0]
-    type: rogue_drone
-  - id: GroundIntruder
+    type: rooftop_rescue
+  - id: Stranded_Survivor_Sector_C
     pos: [60.0, -20.0, 0.0]
-    type: ground_intruder
+    type: ground_rescue
 
 victims:
   - id: Survivor_Alpha

@@ -116,6 +116,10 @@ class LightweightBackend(SimBackend):
             else:
                 raise ValueError(f"Unknown action_mode '{action_mode}'")
 
+            # Apply wind effect
+            if self.map_config and hasattr(self.map_config, "wind_vector"):
+                agent.vel += np.array(self.map_config.wind_vector)
+
             agent.update_position(dt)
             self.blackboard.broadcast_state(agent)
             self.trails[drone_id].append(agent.pos.copy())
