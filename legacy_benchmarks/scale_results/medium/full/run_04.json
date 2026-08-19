@@ -1,0 +1,155 @@
+{
+  "episode": {
+    "total_steps": 1000,
+    "total_reward": 15721.62,
+    "total_path_length": 10608.46,
+    "total_collisions": 55,
+    "total_energy_consumed": 206.22,
+    "mission_completed": false,
+    "wall_time_seconds": 4.3,
+    "ga_allocation_time_ms": 223.357
+  },
+  "drones": {
+    "UAV_1": {
+      "path_length": 1360.59,
+      "collisions": 5,
+      "collision_events": [
+        "drone-drone: UAV_4",
+        "drone-drone: UAV_5",
+        "drone-drone: UAV_4",
+        "drone-drone: UAV_6",
+        "drone-drone: UAV_4"
+      ],
+      "energy_consumed": 72.18,
+      "final_battery": 27.82,
+      "average_speed": 13.62,
+      "max_speed": 15.0,
+      "tasks_completed": 454
+    },
+    "UAV_2": {
+      "path_length": 1358.13,
+      "collisions": 24,
+      "collision_events": [
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_8"
+      ],
+      "energy_consumed": 77.55,
+      "final_battery": 22.45,
+      "average_speed": 13.6,
+      "max_speed": 15.0,
+      "tasks_completed": 474
+    },
+    "UAV_3": {
+      "path_length": 1314.76,
+      "collisions": 1,
+      "collision_events": [
+        "drone-drone: UAV_8"
+      ],
+      "energy_consumed": 21.33,
+      "final_battery": 78.67,
+      "average_speed": 13.16,
+      "max_speed": 15.0,
+      "tasks_completed": 518
+    },
+    "UAV_4": {
+      "path_length": 1318.14,
+      "collisions": 4,
+      "collision_events": [
+        "drone-drone: UAV_5",
+        "drone-drone: UAV_5",
+        "drone-drone: UAV_5",
+        "drone-drone: UAV_6"
+      ],
+      "energy_consumed": 11.91,
+      "final_battery": 88.09,
+      "average_speed": 13.2,
+      "max_speed": 15.0,
+      "tasks_completed": 492
+    },
+    "UAV_5": {
+      "path_length": 1317.85,
+      "collisions": 1,
+      "collision_events": [
+        "drone-drone: UAV_6"
+      ],
+      "energy_consumed": 9.43,
+      "final_battery": 90.57,
+      "average_speed": 13.19,
+      "max_speed": 15.0,
+      "tasks_completed": 519
+    },
+    "UAV_6": {
+      "path_length": 1310.38,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 3.03,
+      "final_battery": 96.97,
+      "average_speed": 13.12,
+      "max_speed": 15.0,
+      "tasks_completed": 498
+    },
+    "UAV_7": {
+      "path_length": 1313.37,
+      "collisions": 20,
+      "collision_events": [
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8"
+      ],
+      "energy_consumed": 5.8,
+      "final_battery": 94.2,
+      "average_speed": 13.15,
+      "max_speed": 15.0,
+      "tasks_completed": 472
+    },
+    "UAV_8": {
+      "path_length": 1315.22,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 4.99,
+      "final_battery": 95.01,
+      "average_speed": 13.17,
+      "max_speed": 15.0,
+      "tasks_completed": 504
+    }
+  }
+}

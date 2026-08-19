@@ -1,0 +1,18 @@
+======================================================================
+          TRISHIELD SWARM BATCH BENCHMARK SUMMARY REPORT
+======================================================================
+ Total Runs Executed       : 30
+ Successful Runs (Rescued)  : 30 (100.0%)
+ Failed / Timed Out Runs   : 0
+ Active Drones Fleet Size  : 5 Drones (3 Search/SLAM, 2 Landed Relays)
+ Fixed Survivor Targets    : 8 Victims
+ Total Recorded Collisions : 2
+----------------------------------------------------------------------
+Metric                    | Mean       | Std Dev    | Min        | Max       
+----------------------------------------------------------------------
+Total Steps               | 63.07      | 10.88      | 50.00      | 89.00     
+Total Path Length (m)     | 442.94     | 55.72      | 366.66     | 568.52    
+Total Energy (%)          | 55.92      | 5.29       | 48.83      | 68.51     
+Episode Reward            | -193.11    | 50.24      | -309.10    | -129.77   
+Wall Time (s)             | 3.77       | 0.96       | 2.74       | 6.89      
+======================================================================

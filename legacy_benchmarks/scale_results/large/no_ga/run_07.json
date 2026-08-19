@@ -1,0 +1,219 @@
+{
+  "episode": {
+    "total_steps": 1000,
+    "total_reward": 8838.6,
+    "total_path_length": 15765.1,
+    "total_collisions": 75,
+    "total_energy_consumed": 309.6,
+    "mission_completed": false,
+    "wall_time_seconds": 5.87,
+    "ga_allocation_time_ms": 0.398
+  },
+  "drones": {
+    "UAV_1": {
+      "path_length": 1314.46,
+      "collisions": 9,
+      "collision_events": [
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_2",
+        "drone-drone: UAV_2",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_10",
+        "drone-drone: UAV_2"
+      ],
+      "energy_consumed": 23.02,
+      "final_battery": 76.98,
+      "average_speed": 13.16,
+      "max_speed": 15.0,
+      "tasks_completed": 505
+    },
+    "UAV_2": {
+      "path_length": 1314.23,
+      "collisions": 7,
+      "collision_events": [
+        "drone-drone: UAV_10",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_10",
+        "drone-drone: UAV_3",
+        "drone-drone: UAV_4",
+        "drone-drone: UAV_12"
+      ],
+      "energy_consumed": 25.28,
+      "final_battery": 74.72,
+      "average_speed": 13.16,
+      "max_speed": 15.0,
+      "tasks_completed": 478
+    },
+    "UAV_3": {
+      "path_length": 1316.16,
+      "collisions": 6,
+      "collision_events": [
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_10",
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_4",
+        "drone-drone: UAV_10"
+      ],
+      "energy_consumed": 36.59,
+      "final_battery": 63.41,
+      "average_speed": 13.18,
+      "max_speed": 15.0,
+      "tasks_completed": 497
+    },
+    "UAV_4": {
+      "path_length": 1310.43,
+      "collisions": 5,
+      "collision_events": [
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_10",
+        "drone-drone: UAV_12"
+      ],
+      "energy_consumed": 19.96,
+      "final_battery": 80.04,
+      "average_speed": 13.12,
+      "max_speed": 15.0,
+      "tasks_completed": 478
+    },
+    "UAV_5": {
+      "path_length": 1320.4,
+      "collisions": 9,
+      "collision_events": [
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_6",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_6",
+        "drone-drone: UAV_9"
+      ],
+      "energy_consumed": 22.68,
+      "final_battery": 77.32,
+      "average_speed": 13.22,
+      "max_speed": 15.0,
+      "tasks_completed": 475
+    },
+    "UAV_6": {
+      "path_length": 1315.01,
+      "collisions": 13,
+      "collision_events": [
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_7",
+        "drone-drone: UAV_9"
+      ],
+      "energy_consumed": 26.41,
+      "final_battery": 73.59,
+      "average_speed": 13.17,
+      "max_speed": 15.0,
+      "tasks_completed": 476
+    },
+    "UAV_7": {
+      "path_length": 1308.76,
+      "collisions": 11,
+      "collision_events": [
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_8",
+        "drone-drone: UAV_11"
+      ],
+      "energy_consumed": 10.15,
+      "final_battery": 89.85,
+      "average_speed": 13.1,
+      "max_speed": 15.0,
+      "tasks_completed": 488
+    },
+    "UAV_8": {
+      "path_length": 1308.56,
+      "collisions": 8,
+      "collision_events": [
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_9",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_11"
+      ],
+      "energy_consumed": 19.76,
+      "final_battery": 80.24,
+      "average_speed": 13.1,
+      "max_speed": 15.0,
+      "tasks_completed": 490
+    },
+    "UAV_9": {
+      "path_length": 1320.63,
+      "collisions": 5,
+      "collision_events": [
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_11",
+        "drone-drone: UAV_11"
+      ],
+      "energy_consumed": 46.84,
+      "final_battery": 53.16,
+      "average_speed": 13.22,
+      "max_speed": 15.0,
+      "tasks_completed": 511
+    },
+    "UAV_10": {
+      "path_length": 1313.35,
+      "collisions": 2,
+      "collision_events": [
+        "drone-drone: UAV_12",
+        "drone-drone: UAV_12"
+      ],
+      "energy_consumed": 26.69,
+      "final_battery": 73.31,
+      "average_speed": 13.15,
+      "max_speed": 15.0,
+      "tasks_completed": 515
+    },
+    "UAV_11": {
+      "path_length": 1319.96,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 42.97,
+      "final_battery": 57.03,
+      "average_speed": 13.21,
+      "max_speed": 15.0,
+      "tasks_completed": 506
+    },
+    "UAV_12": {
+      "path_length": 1303.13,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 9.27,
+      "final_battery": 90.73,
+      "average_speed": 13.05,
+      "max_speed": 15.0,
+      "tasks_completed": 467
+    }
+  }
+}
