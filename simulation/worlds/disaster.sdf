@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="default">
+    <!-- Required Physics and Rendering Plugins -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"></plugin>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"></plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"></plugin>
+    <plugin filename="gz-sim-particle-emitter-system" name="gz::sim::systems::ParticleEmitter"></plugin>
+
+    <!-- Global Light Source -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Infinite Ground Plane -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Raging Fire Particle Emitter -->
+    <model name="wildfire">
+      <static>true</static>
+      <pose>10 10 0 0 0 0</pose>
+      <link name="link">
+        <particle_emitter name="fire_emitter" type="box">
+          <emitting>true</emitting>
+          <size>5 5 0</size>
+          <particle_size>2 2 2</particle_size>
+          <lifetime>1.5</lifetime>
+          <min_velocity>2</min_velocity>
+          <max_velocity>4</max_velocity>
+          <scale_rate>1.5</scale_rate>
+          <rate>200</rate>
+          <material>
+            <ambient>1 0.4 0 1</ambient>
+            <diffuse>1 0.4 0 1</diffuse>
+          </material>
+        </particle_emitter>
+      </link>
+    </model>
+
+    <!-- Thick Smoke Emitter -->
+    <model name="smoke_plume">
+      <static>true</static>
+      <pose>10 10 2 0 0 0</pose>
+      <link name="link">
+        <particle_emitter name="smoke_emitter" type="box">
+          <emitting>true</emitting>
+          <size>6 6 0</size>
+          <particle_size>4 4 4</particle_size>
+          <lifetime>8</lifetime>
+          <min_velocity>1</min_velocity>
+          <max_velocity>3</max_velocity>
+          <scale_rate>2.5</scale_rate>
+          <rate>50</rate>
+          <material>
+            <ambient>0.1 0.1 0.1 0.8</ambient>
+            <diffuse>0.1 0.1 0.1 0.8</diffuse>
+          </material>
+        </particle_emitter>
+      </link>
+    </model>
+
+    <!-- Collapsed House from Gazebo Fuel -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Collapsed House</uri>
+      <pose>10 10 0 0 0 0</pose>
+    </include>
+
+    <!-- Wrecked SUV from Gazebo Fuel -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/SUV</uri>
+      <pose>15 5 0 0 0 0.8</pose>
+    </include>
+
+    
+  </world>
+</sdf>

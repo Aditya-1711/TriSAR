@@ -1,0 +1,376 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="city_earthquake_fire_world">
+    <!-- Physics Configuration -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <!-- Core Gazebo Sim Plugins -->
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"></plugin>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"></plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"></plugin>
+
+    <!-- Emergency Sunlight -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 180 0 0 0</pose>
+      <diffuse>1.0 0.9 0.8 1</diffuse>
+      <specular>0.6 0.5 0.4 1</specular>
+      <direction>-0.5 0.2 -0.8</direction>
+    </light>
+
+    <!-- LUSH GREEN TERRAIN GROUND PLANE (180m x 180m) -->
+    <model name="city_ground">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>180 180</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>180 180</size></plane></geometry>
+          <material>
+            <ambient>0.2 0.45 0.2 1</ambient>
+            <diffuse>0.25 0.55 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- RICH CHARCOAL ASPHALT ROAD GRID NETWORK & BROKEN ROAD CRACKS -->
+    <model name="main_avenue_ns">
+      <static>true</static><pose>0 0 0.01 0 0 0</pose>
+      <link name="link"><visual name="visual"><geometry><box><size>14 160 0.02</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.2 1</diffuse></material></visual></link>
+    </model>
+    <model name="main_avenue_ew">
+      <static>true</static><pose>0 0 0.01 0 0 1.57</pose>
+      <link name="link"><visual name="visual"><geometry><box><size>14 160 0.02</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.2 1</diffuse></material></visual></link>
+    </model>
+    <model name="ring_lane_north">
+      <static>true</static><pose>0 50 0.01 0 0 1.57</pose>
+      <link name="link"><visual name="visual"><geometry><box><size>10 160 0.02</size></box></geometry><material><ambient>0.14 0.14 0.15 1</ambient><diffuse>0.2 0.2 0.22 1</diffuse></material></visual></link>
+    </model>
+    <model name="ring_lane_south">
+      <static>true</static><pose>0 -50 0.01 0 0 1.57</pose>
+      <link name="link"><visual name="visual"><geometry><box><size>10 160 0.02</size></box></geometry><material><ambient>0.14 0.14 0.15 1</ambient><diffuse>0.2 0.2 0.22 1</diffuse></material></visual></link>
+    </model>
+
+    <!-- BROKEN ROAD CRACKS, ROAD CRATERS & ASPHALT FISSURES (ELEVATED Z=0.04 FOR HIGH VISIBILITY) -->
+    <model name="road_crack_north_1"><static>true</static><pose>0 22 0.04 0 0 0.4</pose><link name="link"><visual name="crack"><geometry><box><size>13 3.5 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual><visual name="rubble_edge"><pose>0 0 0.04 0 0 0</pose><geometry><box><size>13.2 0.4 0.08</size></box></geometry><material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.5 0.5 0.5 1</diffuse></material></visual></link></model>
+    <model name="road_crack_north_2"><static>true</static><pose>0 40 0.04 0 0 -0.5</pose><link name="link"><visual name="crack"><geometry><box><size>12 3.0 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual></link></model>
+    <model name="road_crack_south_1"><static>true</static><pose>0 -25 0.04 0 0 -0.6</pose><link name="link"><visual name="crack"><geometry><box><size>14 3.5 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual><visual name="rubble_edge"><pose>0 0 0.04 0 0 0</pose><geometry><box><size>14.2 0.4 0.08</size></box></geometry><material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.5 0.5 0.5 1</diffuse></material></visual></link></model>
+    <model name="road_crack_south_2"><static>true</static><pose>0 -42 0.04 0 0 0.3</pose><link name="link"><visual name="crack"><geometry><box><size>12 3.0 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual></link></model>
+    <model name="road_crack_east_1"><static>true</static><pose>28 0 0.04 0 0 1.2</pose><link name="link"><visual name="crack"><geometry><box><size>13 3.5 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual><visual name="rubble_edge"><pose>0 0 0.04 0 0 0</pose><geometry><box><size>13.2 0.4 0.08</size></box></geometry><material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.5 0.5 0.5 1</diffuse></material></visual></link></model>
+    <model name="road_crack_east_2"><static>true</static><pose>45 0 0.04 0 0 0.8</pose><link name="link"><visual name="crack"><geometry><box><size>11 3.0 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual></link></model>
+    <model name="road_crack_west_1"><static>true</static><pose>-28 0 0.04 0 0 -0.8</pose><link name="link"><visual name="crack"><geometry><box><size>13 3.5 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual><visual name="rubble_edge"><pose>0 0 0.04 0 0 0</pose><geometry><box><size>13.2 0.4 0.08</size></box></geometry><material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.5 0.5 0.5 1</diffuse></material></visual></link></model>
+    <model name="road_crack_west_2"><static>true</static><pose>-45 0 0.04 0 0 -0.4</pose><link name="link"><visual name="crack"><geometry><box><size>11 3.0 0.05</size></box></geometry><material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.08 0.08 0.08 1</diffuse></material></visual></link></model>
+
+    <!-- WET MUD PATCHES & EARTH SECTORS -->
+    <model name="mud_patch_1"><static>true</static><pose>0 0 0.02 0 0 0</pose><link name="link"><visual name="mud"><geometry><box><size>16 16 0.03</size></box></geometry><material><ambient>0.3 0.18 0.08 1</ambient><diffuse>0.4 0.24 0.1 1</diffuse></material></visual></link></model>
+    <model name="mud_patch_2"><static>true</static><pose>15 35 0.02 0 0 0.5</pose><link name="link"><visual name="mud"><geometry><box><size>18 14 0.03</size></box></geometry><material><ambient>0.32 0.2 0.09 1</ambient><diffuse>0.42 0.26 0.12 1</diffuse></material></visual></link></model>
+    <model name="mud_patch_3"><static>true</static><pose>-35 35 0.02 0 0 -0.3</pose><link name="link"><visual name="mud"><geometry><box><size>16 16 0.03</size></box></geometry><material><ambient>0.3 0.18 0.08 1</ambient><diffuse>0.4 0.24 0.1 1</diffuse></material></visual></link></model>
+    <model name="mud_patch_4"><static>true</static><pose>30 -12 0.02 0 0 0.8</pose><link name="link"><visual name="mud"><geometry><box><size>15 12 0.03</size></box></geometry><material><ambient>0.32 0.2 0.09 1</ambient><diffuse>0.42 0.26 0.12 1</diffuse></material></visual></link></model>
+    <model name="mud_patch_5"><static>true</static><pose>-30 -15 0.02 0 0 -0.4</pose><link name="link"><visual name="mud"><geometry><box><size>17 13 0.03</size></box></geometry><material><ambient>0.3 0.18 0.08 1</ambient><diffuse>0.4 0.24 0.1 1</diffuse></material></visual></link></model>
+
+    <!-- 1. MOBILE UGV CHARGING STATIONS -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Pickup</uri>
+      <name>ugv_pickup_alpha</name>
+      <pose>20 -15 0 0 0 0</pose>
+    </include>
+    <model name="ugv_charging_pad_alpha">
+      <static>true</static><pose>20 -15 1.45 0 0 0</pose>
+      <link name="link"><visual name="charging_pad"><geometry><box><size>2.8 2.8 0.15</size></box></geometry><material><ambient>0.1 0.8 0.2 1</ambient><diffuse>0.2 0.9 0.3 1</diffuse><emissive>0.1 0.9 0.2 1</emissive></material></visual></link>
+    </model>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/SUV</uri>
+      <name>ugv_suv_beta</name>
+      <pose>-25 -20 0 0 0 1.57</pose>
+    </include>
+    <model name="ugv_charging_pad_beta">
+      <static>true</static><pose>-25 -20 1.55 0 0 1.57</pose>
+      <link name="link"><visual name="charging_pad"><geometry><box><size>2.8 2.8 0.15</size></box></geometry><material><ambient>0.1 0.8 0.2 1</ambient><diffuse>0.2 0.9 0.3 1</diffuse><emissive>0.1 0.9 0.2 1</emissive></material></visual></link>
+    </model>
+
+    <!-- 2. DISASTER ELEMENTS: COLLAPSED BUILDINGS, WRECKED VEHICLES, RUBBLE MOUNDS, DIRT HEAPS & CELL TOWERS -->
+    
+    <!-- 6 Collapsed Buildings & Shattered Slab Ruins -->
+    <model name="collapsed_building_1">
+      <static>true</static><pose>15 35 2 0.3 0.2 0.5</pose>
+      <link name="link">
+        <visual name="slab1"><pose>0 0 1 0 0 0</pose><geometry><box><size>12 10 1.5</size></box></geometry><material><ambient>0.4 0.38 0.35 1</ambient><diffuse>0.5 0.48 0.45 1</diffuse></material></visual>
+        <visual name="slab2"><pose>2 1 2.5 0.4 -0.2 0.3</pose><geometry><box><size>8 8 1.2</size></box></geometry><material><ambient>0.45 0.4 0.35 1</ambient><diffuse>0.55 0.5 0.45 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="collapsed_building_2">
+      <static>true</static><pose>-35 35 2.5 -0.2 0.4 1.2</pose>
+      <link name="link">
+        <visual name="slab1"><pose>0 0 1 0 0 0</pose><geometry><box><size>11 11 1.6</size></box></geometry><material><ambient>0.4 0.38 0.35 1</ambient><diffuse>0.5 0.48 0.45 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="collapsed_building_3">
+      <static>true</static><pose>45 15 2 0.1 0.5 -0.8</pose>
+      <link name="link"><visual name="slab"><geometry><box><size>10 10 2</size></box></geometry><material><ambient>0.42 0.4 0.38 1</ambient><diffuse>0.52 0.5 0.48 1</diffuse></material></visual></link>
+    </model>
+    <model name="collapsed_building_4">
+      <static>true</static><pose>-45 -15 2 -0.3 0.1 0.9</pose>
+      <link name="link"><visual name="slab"><geometry><box><size>10 10 2</size></box></geometry><material><ambient>0.42 0.4 0.38 1</ambient><diffuse>0.52 0.5 0.48 1</diffuse></material></visual></link>
+    </model>
+    <model name="collapsed_building_5">
+      <static>true</static><pose>15 -45 2 0.4 -0.2 -1.1</pose>
+      <link name="link"><visual name="slab"><geometry><box><size>10 10 2</size></box></geometry><material><ambient>0.42 0.4 0.38 1</ambient><diffuse>0.52 0.5 0.48 1</diffuse></material></visual></link>
+    </model>
+    <model name="collapsed_building_6">
+      <static>true</static><pose>-15 45 2 -0.1 0.4 0.7</pose>
+      <link name="link"><visual name="slab"><geometry><box><size>10 10 2</size></box></geometry><material><ambient>0.42 0.4 0.38 1</ambient><diffuse>0.52 0.5 0.48 1</diffuse></material></visual></link>
+    </model>
+
+    <!-- 8 Overturned & Charred Wrecked Vehicles -->
+    <model name="suv_wreck_1"><static>true</static><pose>4 15 1.0 0.4 1.2 0.8</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual></link></model>
+    <model name="suv_wreck_2"><static>true</static><pose>-6 -25 1.0 -0.5 0.8 2.1</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.2 0.12 0.1 1</ambient><diffuse>0.25 0.15 0.12 1</diffuse></material></visual></link></model>
+    <model name="suv_wreck_3"><static>true</static><pose>25 4 0.9 1.1 -0.4 -0.5</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual></link></model>
+    <model name="suv_wreck_4"><static>true</static><pose>-25 -4 1.0 2.2 0.6 1.1</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.18 0.12 0.1 1</ambient><diffuse>0.22 0.15 0.12 1</diffuse></material></visual></link></model>
+    <model name="suv_wreck_5"><static>true</static><pose>45 4 1.1 3.14 0 0.2</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual></link></model>
+    <model name="suv_wreck_6"><static>true</static><pose>-45 -4 0.9 -1.8 0.5 -1.2</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.2 0.12 0.1 1</ambient><diffuse>0.25 0.15 0.12 1</diffuse></material></visual></link></model>
+    <model name="suv_wreck_7"><static>true</static><pose>4 -45 1.0 0.8 -0.2 0.7</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual></link></model>
+    <model name="suv_wreck_8"><static>true</static><pose>-4 45 1.0 2.1 0.4 -0.9</pose><link name="link"><visual name="chassis"><geometry><box><size>4.5 2.0 1.6</size></box></geometry><material><ambient>0.2 0.12 0.1 1</ambient><diffuse>0.25 0.15 0.12 1</diffuse></material></visual></link></model>
+
+    <!-- 8 Concrete Rubble Mounds & 6 Dirt Heaps -->
+    <model name="rubble_mound_1"><static>true</static><pose>8 12 1.5 0.3 0.2 0.8</pose><link name="link"><visual name="visual"><geometry><box><size>10 6 3</size></box></geometry><material><ambient>0.4 0.4 0.38 1</ambient><diffuse>0.5 0.5 0.48 1</diffuse></material></visual></link></model>
+    <model name="rubble_mound_2"><static>true</static><pose>-10 -15 2.0 -0.3 0.2 -0.8</pose><link name="link"><visual name="visual"><geometry><box><size>12 7 4</size></box></geometry><material><ambient>0.38 0.38 0.35 1</ambient><diffuse>0.48 0.48 0.45 1</diffuse></material></visual></link></model>
+    <model name="rubble_mound_3"><static>true</static><pose>30 -12 1.8 -0.2 0.4 -0.5</pose><link name="link"><visual name="visual"><geometry><box><size>11 6 3.5</size></box></geometry><material><ambient>0.4 0.4 0.38 1</ambient><diffuse>0.5 0.5 0.48 1</diffuse></material></visual></link></model>
+    <model name="rubble_mound_4"><static>true</static><pose>-30 12 2.2 0.4 -0.1 0.9</pose><link name="link"><visual name="visual"><geometry><box><size>13 8 4</size></box></geometry><material><ambient>0.38 0.38 0.35 1</ambient><diffuse>0.48 0.48 0.45 1</diffuse></material></visual></link></model>
+    <model name="dirt_mound_1"><static>true</static><pose>12 -30 1.2 0 0 0</pose><link name="link"><visual name="visual"><geometry><box><size>9 9 4.5</size></box></geometry><material><ambient>0.4 0.28 0.15 1</ambient><diffuse>0.5 0.35 0.2 1</diffuse></material></visual></link></model>
+    <model name="dirt_mound_2"><static>true</static><pose>-30 15 1.5 0 0 0</pose><link name="link"><visual name="visual"><geometry><box><size>10 10 5</size></box></geometry><material><ambient>0.38 0.26 0.12 1</ambient><diffuse>0.48 0.33 0.18 1</diffuse></material></visual></link></model>
+
+    <!-- 7. 4 FULL 25-METER HIGH-DETAIL 3D STEEL LATTICE CELLULAR NETWORK TOWERS -->
+    <model name="broken_cell_tower_1">
+      <static>true</static><pose>35 25 0.0 0.35 0.15 0.3</pose>
+      <link name="link">
+        <!-- Main Red/White Steel Lattice Mast -->
+        <visual name="mast_lower"><pose>0 0 6 0 0 0</pose><geometry><cylinder><radius>0.4</radius><length>12</length></cylinder></geometry><material><ambient>0.8 0.15 0.15 1</ambient><diffuse>0.9 0.2 0.2 1</diffuse></material></visual>
+        <visual name="mast_upper"><pose>0 0 18 0 0 0</pose><geometry><cylinder><radius>0.3</radius><length>12</length></cylinder></geometry><material><ambient>0.85 0.85 0.85 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material></visual>
+        <!-- Antenna Platform & Microwave Dish -->
+        <visual name="antenna_boom"><pose>0 0 23.5 0 0 0</pose><geometry><box><size>3.6 3.6 0.4</size></box></geometry><material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
+        <visual name="microwave_dish_1"><pose>0 -1.5 19 1.57 0 0</pose><geometry><cylinder><radius>1.3</radius><length>0.35</length></cylinder></geometry><material><ambient>0.9 0.9 0.9 1</ambient><diffuse>1.0 1.0 1.0 1</diffuse></material></visual>
+        <visual name="microwave_dish_2"><pose>1.5 0 17 0 1.57 0</pose><geometry><cylinder><radius>1.0</radius><length>0.3</length></cylinder></geometry><material><ambient>0.9 0.9 0.9 1</ambient><diffuse>1.0 1.0 1.0 1</diffuse></material></visual>
+        <!-- Flashing Red Top Warning Beacon -->
+        <visual name="hazard_beacon"><pose>0 0 25.0 0 0 0</pose><geometry><box><size>0.7 0.7 0.7</size></box></geometry><material><ambient>1.0 0.0 0.0 1</ambient><diffuse>1.0 0.0 0.0 1</diffuse><emissive>1.0 0.0 0.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <model name="broken_cell_tower_2">
+      <static>true</static><pose>-35 30 0.0 0 0.45 0.7</pose>
+      <link name="link">
+        <visual name="mast_lower"><pose>0 0 6 0 0 0</pose><geometry><cylinder><radius>0.4</radius><length>12</length></cylinder></geometry><material><ambient>0.8 0.15 0.15 1</ambient><diffuse>0.9 0.2 0.2 1</diffuse></material></visual>
+        <visual name="mast_upper"><pose>0 0 18 0 0 0</pose><geometry><cylinder><radius>0.3</radius><length>12</length></cylinder></geometry><material><ambient>0.85 0.85 0.85 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material></visual>
+        <visual name="antenna_boom"><pose>0 0 23.5 0 0 0</pose><geometry><box><size>3.6 3.6 0.4</size></box></geometry><material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
+        <visual name="hazard_beacon"><pose>0 0 25.0 0 0 0</pose><geometry><box><size>0.7 0.7 0.7</size></box></geometry><material><ambient>1.0 0.0 0.0 1</ambient><diffuse>1.0 0.0 0.0 1</diffuse><emissive>1.0 0.0 0.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <model name="broken_cell_tower_3">
+      <static>true</static><pose>45 -35 0.0 0.3 -0.2 0.5</pose>
+      <link name="link">
+        <visual name="mast_lower"><pose>0 0 6 0 0 0</pose><geometry><cylinder><radius>0.4</radius><length>12</length></cylinder></geometry><material><ambient>0.8 0.15 0.15 1</ambient><diffuse>0.9 0.2 0.2 1</diffuse></material></visual>
+        <visual name="mast_upper"><pose>0 0 18 0 0 0</pose><geometry><cylinder><radius>0.3</radius><length>12</length></cylinder></geometry><material><ambient>0.85 0.85 0.85 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material></visual>
+        <visual name="antenna_boom"><pose>0 0 23.5 0 0 0</pose><geometry><box><size>3.6 3.6 0.4</size></box></geometry><material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual>
+        <visual name="microwave_dish_1"><pose>0 -1.5 19 1.57 0 0</pose><geometry><cylinder><radius>1.3</radius><length>0.35</length></cylinder></geometry><material><ambient>0.9 0.9 0.9 1</ambient><diffuse>1.0 1.0 1.0 1</diffuse></material></visual>
+        <visual name="hazard_beacon"><pose>0 0 25.0 0 0 0</pose><geometry><box><size>0.7 0.7 0.7</size></box></geometry><material><ambient>1.0 0.0 0.0 1</ambient><diffuse>1.0 0.0 0.0 1</diffuse><emissive>1.0 0.0 0.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <model name="broken_cell_tower_4">
+      <static>true</static><pose>-45 -35 0.0 0 0.4 -0.4</pose>
+      <link name="link">
+        <visual name="mast_lower"><pose>0 0 6 0 0 0</pose><geometry><cylinder><radius>0.4</radius><length>12</length></cylinder></geometry><material><ambient>0.8 0.15 0.15 1</ambient><diffuse>0.9 0.2 0.2 1</diffuse></material></visual>
+        <visual name="mast_upper"><pose>0 0 18 0 0 0</pose><geometry><cylinder><radius>0.3</radius><length>12</length></cylinder></geometry><material><ambient>0.85 0.85 0.85 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material></visual>
+        <visual name="hazard_beacon"><pose>0 0 25.0 0 0 0</pose><geometry><box><size>0.7 0.7 0.7</size></box></geometry><material><ambient>1.0 0.0 0.0 1</ambient><diffuse>1.0 0.0 0.0 1</diffuse><emissive>1.0 0.0 0.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <!-- 3. STANDALONE URBAN DETAILS (TREES, BENCHES, HYDRANTS, POST BOXES, DUSTBINS) -->
+    
+    <!-- Suburban Trees -->
+    <model name="tree_1"><static>true</static><pose>12 38 0 0 0 0</pose><link name="link"><visual name="trunk"><pose>0 0 2 0 0 0</pose><geometry><cylinder><radius>0.25</radius><length>4</length></cylinder></geometry><material><ambient>0.4 0.25 0.1 1</ambient><diffuse>0.5 0.3 0.15 1</diffuse></material></visual><visual name="canopy"><pose>0 0 5 0 0 0</pose><geometry><cone><radius>2.5</radius><length>4</length></cone></geometry><material><ambient>0.15 0.5 0.15 1</ambient><diffuse>0.2 0.6 0.2 1</diffuse></material></visual></link></model>
+    <model name="tree_2"><static>true</static><pose>34 38 0 0 0 0</pose><link name="link"><visual name="trunk"><pose>0 0 2 0 0 0</pose><geometry><cylinder><radius>0.25</radius><length>4</length></cylinder></geometry><material><ambient>0.4 0.25 0.1 1</ambient><diffuse>0.5 0.3 0.15 1</diffuse></material></visual><visual name="canopy"><pose>0 0 5 0 0 0</pose><geometry><cone><radius>2.5</radius><length>4</length></cone></geometry><material><ambient>0.15 0.5 0.15 1</ambient><diffuse>0.2 0.6 0.2 1</diffuse></material></visual></link></model>
+    <model name="tree_3"><static>true</static><pose>-12 38 0 0 0 0</pose><link name="link"><visual name="trunk"><pose>0 0 2 0 0 0</pose><geometry><cylinder><radius>0.25</radius><length>4</length></cylinder></geometry><material><ambient>0.4 0.25 0.1 1</ambient><diffuse>0.5 0.3 0.15 1</diffuse></material></visual><visual name="canopy"><pose>0 0 5 0 0 0</pose><geometry><cone><radius>2.5</radius><length>4</length></cone></geometry><material><ambient>0.15 0.5 0.15 1</ambient><diffuse>0.2 0.6 0.2 1</diffuse></material></visual></link></model>
+    <model name="tree_4"><static>true</static><pose>-34 38 0 0 0 0</pose><link name="link"><visual name="trunk"><pose>0 0 2 0 0 0</pose><geometry><cylinder><radius>0.25</radius><length>4</length></cylinder></geometry><material><ambient>0.4 0.25 0.1 1</ambient><diffuse>0.5 0.3 0.15 1</diffuse></material></visual><visual name="canopy"><pose>0 0 5 0 0 0</pose><geometry><cone><radius>2.5</radius><length>4</length></cone></geometry><material><ambient>0.15 0.5 0.15 1</ambient><diffuse>0.2 0.6 0.2 1</diffuse></material></visual></link></model>
+    <model name="tree_5"><static>true</static><pose>12 -38 0 0 0 0</pose><link name="link"><visual name="trunk"><pose>0 0 2 0 0 0</pose><geometry><cylinder><radius>0.25</radius><length>4</length></cylinder></geometry><material><ambient>0.4 0.25 0.1 1</ambient><diffuse>0.5 0.3 0.15 1</diffuse></material></visual><visual name="canopy"><pose>0 0 5 0 0 0</pose><geometry><cone><radius>2.5</radius><length>4</length></cone></geometry><material><ambient>0.15 0.5 0.15 1</ambient><diffuse>0.2 0.6 0.2 1</diffuse></material></visual></link></model>
+    <model name="tree_6"><static>true</static><pose>-12 -38 0 0 0 0</pose><link name="link"><visual name="trunk"><pose>0 0 2 0 0 0</pose><geometry><cylinder><radius>0.25</radius><length>4</length></cylinder></geometry><material><ambient>0.4 0.25 0.1 1</ambient><diffuse>0.5 0.3 0.15 1</diffuse></material></visual><visual name="canopy"><pose>0 0 5 0 0 0</pose><geometry><cone><radius>2.5</radius><length>4</length></cone></geometry><material><ambient>0.15 0.5 0.15 1</ambient><diffuse>0.2 0.6 0.2 1</diffuse></material></visual></link></model>
+
+    <!-- Park / Sidewalk Benches -->
+    <model name="bench_1"><static>true</static><pose>18 42 0.4 0 0 0</pose><link name="link"><visual name="seat"><geometry><box><size>2.0 0.6 0.1</size></box></geometry><material><ambient>0.5 0.25 0.1 1</ambient><diffuse>0.6 0.3 0.15 1</diffuse></material></visual></link></model>
+    <model name="bench_2"><static>true</static><pose>-18 42 0.4 0 0 0</pose><link name="link"><visual name="seat"><geometry><box><size>2.0 0.6 0.1</size></box></geometry><material><ambient>0.5 0.25 0.1 1</ambient><diffuse>0.6 0.3 0.15 1</diffuse></material></visual></link></model>
+
+    <!-- Fire Hydrants -->
+    <model name="hydrant_1"><static>true</static><pose>7.8 15 0.4 0 0 0</pose><link name="link"><visual name="body"><geometry><cylinder><radius>0.2</radius><length>0.8</length></cylinder></geometry><material><ambient>0.9 0.1 0.1 1</ambient><diffuse>1.0 0.15 0.15 1</diffuse></material></visual></link></model>
+    <model name="hydrant_2"><static>true</static><pose>-7.8 15 0.4 0 0 0</pose><link name="link"><visual name="body"><geometry><cylinder><radius>0.2</radius><length>0.8</length></cylinder></geometry><material><ambient>0.9 0.1 0.1 1</ambient><diffuse>1.0 0.15 0.15 1</diffuse></material></visual></link></model>
+
+    <!-- Red Mail / Post Boxes -->
+    <model name="post_box_1"><static>true</static><pose>8 7 0.6 0 0 0</pose><link name="link"><visual name="box"><geometry><box><size>0.6 0.6 1.2</size></box></geometry><material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.9 0.15 0.15 1</diffuse></material></visual></link></model>
+    <model name="post_box_2"><static>true</static><pose>-8 7 0.6 0 0 0</pose><link name="link"><visual name="box"><geometry><box><size>0.6 0.6 1.2</size></box></geometry><material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.9 0.15 0.15 1</diffuse></material></visual></link></model>
+    <model name="post_box_3"><static>true</static><pose>8 -7 0.6 0 0 0</pose><link name="link"><visual name="box"><geometry><box><size>0.6 0.6 1.2</size></box></geometry><material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.9 0.15 0.15 1</diffuse></material></visual></link></model>
+    <model name="post_box_4"><static>true</static><pose>-8 -7 0.6 0 0 0</pose><link name="link"><visual name="box"><geometry><box><size>0.6 0.6 1.2</size></box></geometry><material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.9 0.15 0.15 1</diffuse></material></visual></link></model>
+
+    <!-- 4. STREET LAMP POSTS ON EVERY ROAD (16 LAMP POSTS LINING THE ROAD GRID) -->
+    <model name="street_lamp_1"><static>true</static><pose>7.2 15 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_2"><static>true</static><pose>-7.2 15 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_3"><static>true</static><pose>7.2 -15 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_4"><static>true</static><pose>-7.2 -15 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_5"><static>true</static><pose>7.2 45 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_6"><static>true</static><pose>-7.2 45 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_7"><static>true</static><pose>7.2 -45 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_8"><static>true</static><pose>-7.2 -45 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_9"><static>true</static><pose>25 7.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_10"><static>true</static><pose>-25 7.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_11"><static>true</static><pose>25 -7.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_12"><static>true</static><pose>-25 -7.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_13"><static>true</static><pose>45 55.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_14"><static>true</static><pose>-45 55.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_15"><static>true</static><pose>45 -55.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+    <model name="street_lamp_16"><static>true</static><pose>-45 -55.2 3.0 0 0 0</pose><link name="link"><visual name="pole"><geometry><cylinder><radius>0.1</radius><length>6.0</length></cylinder></geometry><material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.4 0.4 0.4 1</diffuse></material></visual><visual name="lamp"><pose>0 0 3.1 0 0 0</pose><geometry><box><size>0.4 0.4 0.3</size></box></geometry><material><ambient>1.0 1.0 0.8 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>1.0 1.0 0.8 1</emissive></material></visual></link></model>
+
+    <!-- 5. MUNICIPAL DUSTBINS ON EVERY ROAD (16 DUSTBINS LINING THE SIDEWALKS) -->
+    <model name="dustbin_1"><static>true</static><pose>7.5 12 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_2"><static>true</static><pose>-7.5 12 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_3"><static>true</static><pose>7.5 -12 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_4"><static>true</static><pose>-7.5 -12 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_5"><static>true</static><pose>7.5 35 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_6"><static>true</static><pose>-7.5 35 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_7"><static>true</static><pose>7.5 -35 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_8"><static>true</static><pose>-7.5 -35 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_9"><static>true</static><pose>35 7.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_10"><static>true</static><pose>-35 7.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_11"><static>true</static><pose>35 -7.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_12"><static>true</static><pose>-35 -7.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_13"><static>true</static><pose>55 45.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_14"><static>true</static><pose>-55 45.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_15"><static>true</static><pose>55 -45.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+    <model name="dustbin_16"><static>true</static><pose>-55 -45.5 0.5 0 0 0</pose><link name="link"><visual name="bin"><geometry><cylinder><radius>0.35</radius><length>1.0</length></cylinder></geometry><material><ambient>0.1 0.4 0.2 1</ambient><diffuse>0.15 0.5 0.25 1</diffuse></material></visual></link></model>
+
+    <!-- 6. ALL 12 HIGH-RISE OFFICE TOWERS (15.0m UNIFORM HEIGHT) -->
+    <model name="office_1"><static>true</static><pose>25 25 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.2 0.35 0.5 1</ambient><diffuse>0.3 0.5 0.7 1</diffuse></material></visual></link></model>
+    <model name="office_2"><static>true</static><pose>-25 25 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.2 0.35 0.5 1</ambient><diffuse>0.3 0.5 0.7 1</diffuse></material></visual></link></model>
+    <model name="office_3"><static>true</static><pose>25 -25 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.25 0.3 0.45 1</ambient><diffuse>0.35 0.4 0.6 1</diffuse></material></visual></link></model>
+    <model name="office_4"><static>true</static><pose>-25 -25 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.25 0.3 0.45 1</ambient><diffuse>0.35 0.4 0.6 1</diffuse></material></visual></link></model>
+    <model name="office_5"><static>true</static><pose>55 55 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.2 0.4 0.55 1</ambient><diffuse>0.3 0.55 0.75 1</diffuse></material></visual></link></model>
+    <model name="office_6"><static>true</static><pose>-55 55 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.2 0.4 0.55 1</ambient><diffuse>0.3 0.55 0.75 1</diffuse></material></visual></link></model>
+    <model name="office_7"><static>true</static><pose>55 -55 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.25 0.35 0.5 1</ambient><diffuse>0.35 0.45 0.65 1</diffuse></material></visual></link></model>
+    <model name="office_8"><static>true</static><pose>-55 -55 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>14 14 15</size></box></geometry><material><ambient>0.25 0.35 0.5 1</ambient><diffuse>0.35 0.45 0.65 1</diffuse></material></visual></link></model>
+    <model name="office_9"><static>true</static><pose>15 68 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>12 12 15</size></box></geometry><material><ambient>0.3 0.35 0.45 1</ambient><diffuse>0.4 0.45 0.6 1</diffuse></material></visual></link></model>
+    <model name="office_10"><static>true</static><pose>-15 68 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>12 12 15</size></box></geometry><material><ambient>0.3 0.35 0.45 1</ambient><diffuse>0.4 0.45 0.6 1</diffuse></material></visual></link></model>
+    <model name="office_11"><static>true</static><pose>15 -68 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>12 12 15</size></box></geometry><material><ambient>0.3 0.35 0.45 1</ambient><diffuse>0.4 0.45 0.6 1</diffuse></material></visual></link></model>
+    <model name="office_12"><static>true</static><pose>-15 -68 7.5 0 0 0</pose><link name="link"><visual name="facade"><geometry><box><size>12 12 15</size></box></geometry><material><ambient>0.3 0.35 0.45 1</ambient><diffuse>0.4 0.45 0.6 1</diffuse></material></visual></link></model>
+
+    <!-- 7. ALL 18 RESIDENTIAL SUBURBAN HOUSES -->
+    <model name="house_1"><static>true</static><pose>18 38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_2"><static>true</static><pose>40 38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_3"><static>true</static><pose>-18 38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_4"><static>true</static><pose>-40 38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_5"><static>true</static><pose>18 -38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_6"><static>true</static><pose>40 -38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_7"><static>true</static><pose>68 18 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_8"><static>true</static><pose>68 38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_9"><static>true</static><pose>-68 18 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_10"><static>true</static><pose>-68 38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_11"><static>true</static><pose>68 -18 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_12"><static>true</static><pose>68 -38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_13"><static>true</static><pose>-68 -18 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_14"><static>true</static><pose>-68 -38 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_15"><static>true</static><pose>38 68 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_16"><static>true</static><pose>-38 68 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_17"><static>true</static><pose>38 -68 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.7 0.35 0.25 1</ambient><diffuse>0.8 0.45 0.3 1</diffuse></material></visual></link></model>
+    <model name="house_18"><static>true</static><pose>-38 -68 3 0 0 0</pose><link name="link"><visual name="walls"><geometry><box><size>10 12 6</size></box></geometry><material><ambient>0.75 0.4 0.25 1</ambient><diffuse>0.85 0.5 0.3 1</diffuse></material></visual></link></model>
+
+    <!-- 8. 5 PERFECT 1.8-METER GOLDILOCKS SWEET SPOT QUADCOPTER DRONES -->
+    
+    <!-- UAV_1: Search & Rescue (Rescue Red/Orange Quadcopter) -->
+    <model name="UAV_1">
+      <static>true</static>
+      <pose>8.0 0.0 10.0 0 0 0</pose>
+      <link name="link">
+        <visual name="chassis">
+          <geometry><box><size>1.8 1.8 0.4</size></box></geometry>
+          <material><ambient>1.0 0.2 0.0 1</ambient><diffuse>1.0 0.3 0.0 1</diffuse><emissive>1.0 0.2 0.0 1</emissive></material>
+        </visual>
+        <visual name="rotor1"><pose>1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor2"><pose>-1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor3"><pose>1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor4"><pose>-1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="beacon"><pose>0 0 0.3 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>1.0 0.5 0.0 1</ambient><diffuse>1.0 0.6 0.0 1</diffuse><emissive>1.0 0.8 0.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <!-- UAV_2: Search & Rescue (Rescue Red/Orange Quadcopter) -->
+    <model name="UAV_2">
+      <static>true</static>
+      <pose>2.5 7.6 10.5 0 0 0</pose>
+      <link name="link">
+        <visual name="chassis">
+          <geometry><box><size>1.8 1.8 0.4</size></box></geometry>
+          <material><ambient>1.0 0.2 0.0 1</ambient><diffuse>1.0 0.3 0.0 1</diffuse><emissive>1.0 0.2 0.0 1</emissive></material>
+        </visual>
+        <visual name="rotor1"><pose>1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor2"><pose>-1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor3"><pose>1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor4"><pose>-1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="beacon"><pose>0 0 0.3 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>1.0 0.5 0.0 1</ambient><diffuse>1.0 0.6 0.0 1</diffuse><emissive>1.0 0.8 0.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <!-- UAV_3: 3D City Mapping (Explorer Cyan/Blue Quadcopter) -->
+    <model name="UAV_3">
+      <static>true</static>
+      <pose>-6.5 4.7 11.0 0 0 0</pose>
+      <link name="link">
+        <visual name="chassis">
+          <geometry><box><size>1.8 1.8 0.4</size></box></geometry>
+          <material><ambient>0.0 0.7 1.0 1</ambient><diffuse>0.0 0.8 1.0 1</diffuse><emissive>0.0 0.8 1.0 1</emissive></material>
+        </visual>
+        <visual name="rotor1"><pose>1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor2"><pose>-1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor3"><pose>1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor4"><pose>-1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="beacon"><pose>0 0 0.3 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>0.0 0.8 1.0 1</ambient><diffuse>0.2 0.9 1.0 1</diffuse><emissive>0.2 0.9 1.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <!-- UAV_4: Wireless Mesh Relay (Signal Purple Quadcopter) -->
+    <model name="UAV_4">
+      <static>true</static>
+      <pose>-6.5 -4.7 11.5 0 0 0</pose>
+      <link name="link">
+        <visual name="chassis">
+          <geometry><box><size>1.8 1.8 0.4</size></box></geometry>
+          <material><ambient>0.8 0.2 1.0 1</ambient><diffuse>0.9 0.3 1.0 1</diffuse><emissive>0.8 0.2 1.0 1</emissive></material>
+        </visual>
+        <visual name="rotor1"><pose>1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor2"><pose>-1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor3"><pose>1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor4"><pose>-1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="beacon"><pose>0 0 0.3 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>0.9 0.3 1.0 1</ambient><diffuse>1.0 0.4 1.0 1</diffuse><emissive>1.0 0.4 1.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+    <!-- UAV_5: Wireless Mesh Relay (Signal Purple Quadcopter) -->
+    <model name="UAV_5">
+      <static>true</static>
+      <pose>2.5 -7.6 12.0 0 0 0</pose>
+      <link name="link">
+        <visual name="chassis">
+          <geometry><box><size>1.8 1.8 0.4</size></box></geometry>
+          <material><ambient>0.8 0.2 1.0 1</ambient><diffuse>0.9 0.3 1.0 1</diffuse><emissive>0.8 0.2 1.0 1</emissive></material>
+        </visual>
+        <visual name="rotor1"><pose>1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor2"><pose>-1.0 1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor3"><pose>1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="rotor4"><pose>-1.0 -1.0 0.2 0 0 0</pose><geometry><cylinder><radius>0.6</radius><length>0.1</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material></visual>
+        <visual name="beacon"><pose>0 0 0.3 0 0 0</pose><geometry><box><size>0.5 0.5 0.5</size></box></geometry><material><ambient>0.9 0.3 1.0 1</ambient><diffuse>1.0 0.4 1.0 1</diffuse><emissive>1.0 0.4 1.0 1</emissive></material></visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>
