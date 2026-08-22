@@ -51,7 +51,7 @@ class HeterogeneousGA:
         return fitness * battery_penalty * urgency_factor * type_factor
 
     # ------------------------------------------------------------------ #
-    # Decoding: chromosome (task priority order) -> {task_id: agent_id}
+    # Decoding: chromosome (task priority order) -> {agent_id: [task_ids]}
     # ------------------------------------------------------------------ #
     UNASSIGNED_PENALTY = 500.0  # large fixed cost for a task that gets no agent
 
@@ -60,19 +60,25 @@ class HeterogeneousGA:
         chromosome: list of task indices (a permutation of range(len(tasks)))
         tasks: list of (task_id, task_pos, task_type, urgency)
         agents: list of Agent objects
-        Returns (assignments dict, total_fitness float)
+        Returns (agent_queues dict {agent_id: [task_ids]}, total_fitness float)
         """
-        assigned_agent_ids = set()
-        assignments = {}
+        agent_queues = {agent.id: [] for agent in agents}
+        assigned_agent_ids_in_round = set()
         total_fitness = 0.0
 
         for task_idx in chromosome:
+            if task_idx >= len(tasks):
+                continue
             task_id, task_pos, task_type, urgency = tasks[task_idx]
+
+            # When all agents have been assigned in current round, reset for next round
+            if len(assigned_agent_ids_in_round) >= len(agents):
+                assigned_agent_ids_in_round.clear()
 
             best_agent = None
             best_fitness = float('inf')
             for agent in agents:
-                if agent.id in assigned_agent_ids:
+                if agent.id in assigned_agent_ids_in_round:
                     continue
                 fitness = self.calculate_fitness(agent, task_pos, task_type, urgency)
                 if fitness < best_fitness:
@@ -80,13 +86,13 @@ class HeterogeneousGA:
                     best_agent = agent
 
             if best_agent is not None and best_fitness != float('inf'):
-                assignments[task_id] = best_agent.id
-                assigned_agent_ids.add(best_agent.id)
+                agent_queues[best_agent.id].append(task_id)
+                assigned_agent_ids_in_round.add(best_agent.id)
                 total_fitness += best_fitness
             else:
                 total_fitness += self.UNASSIGNED_PENALTY
 
-        return assignments, total_fitness
+        return agent_queues, total_fitness
 
     # ------------------------------------------------------------------ #
     # GA operators
@@ -132,7 +138,7 @@ class HeterogeneousGA:
         return chromosome
 
     # ------------------------------------------------------------------ #
-    # Main entry point — public API is unchanged: allocate() -> dict
+    # Main entry point — allocate() -> dict {agent_id: [task_ids]}
     # ------------------------------------------------------------------ #
     def allocate(self):
         import os
@@ -142,16 +148,20 @@ class HeterogeneousGA:
 
         # Baseline check: If variant disables GA (no_ga or floor), perform Greedy Nearest/Fitness Allocation
         if variant in ["no_ga", "floor"]:
-            assignments = {}
-            agents = list(self.bb.agent_states.values())
+            relay_ids = {'UAV_4', 'UAV_5'}
+            agents = [a for a in self.bb.agent_states.values() if getattr(a, 'id', '') not in relay_ids]
             if not agents:
+                agents = list(self.bb.agent_states.values())
+            agent_queues = {agent.id: [] for agent in agents}
+            if not agents:
+
                 elapsed_ms = (time.perf_counter() - start_time) * 1000.0
                 self.last_run_stats = {
                     'allocator_type': 'greedy',
                     'ga_allocation_time_ms': round(elapsed_ms, 3),
                     'generations_run': 0,
                 }
-                return assignments
+                return agent_queues
 
             tasks = []
             for tid, t in self.bb.threats.items():
@@ -161,23 +171,25 @@ class HeterogeneousGA:
                 task_type = 'rooftop_rescue' if v['pos'][2] > 2 else 'ground_rescue'
                 tasks.append((vid, v['pos'], task_type, v.get('urgency', 8)))
 
-            assigned_agent_ids = set()
-            # Sort tasks by urgency descending (highest urgency first)
+            assigned_agent_ids_in_round = set()
             tasks_sorted = sorted(tasks, key=lambda x: x[3], reverse=True)
 
             for tid, tpos, ttype, urgency in tasks_sorted:
+                if len(assigned_agent_ids_in_round) >= len(agents):
+                    assigned_agent_ids_in_round.clear()
+
                 best_agent = None
                 best_fitness = float('inf')
                 for agent in agents:
-                    if agent.id in assigned_agent_ids:
+                    if agent.id in assigned_agent_ids_in_round:
                         continue
                     fit = self.calculate_fitness(agent, tpos, ttype, urgency)
                     if fit < best_fitness:
                         best_fitness = fit
                         best_agent = agent
                 if best_agent is not None:
-                    assignments[tid] = best_agent.id
-                    assigned_agent_ids.add(best_agent.id)
+                    agent_queues[best_agent.id].append(tid)
+                    assigned_agent_ids_in_round.add(best_agent.id)
 
             elapsed_ms = (time.perf_counter() - start_time) * 1000.0
             self.last_run_stats = {
@@ -185,9 +197,12 @@ class HeterogeneousGA:
                 'ga_allocation_time_ms': round(elapsed_ms, 3),
                 'generations_run': 0,
             }
-            return assignments
+            return agent_queues
 
-        agents = list(self.bb.agent_states.values())
+        relay_ids = {'UAV_4', 'UAV_5'}
+        agents = [a for a in self.bb.agent_states.values() if getattr(a, 'id', '') not in relay_ids]
+        if not agents:
+            agents = list(self.bb.agent_states.values())
 
         tasks = []
         for tid, t in self.bb.threats.items():
@@ -197,6 +212,7 @@ class HeterogeneousGA:
             task_type = 'rooftop_rescue' if v['pos'][2] > 2 else 'ground_rescue'
             tasks.append((vid, v['pos'], task_type, v.get('urgency', 8)))
 
+
         if not tasks or not agents:
             elapsed_ms = (time.perf_counter() - start_time) * 1000.0
             self.last_run_stats = {
@@ -204,27 +220,26 @@ class HeterogeneousGA:
                 'ga_allocation_time_ms': round(elapsed_ms, 3),
                 'generations_run': 0, 'best_fitness': None, 'converged_at': None
             }
-            return {}
+            return {agent.id: [] for agent in agents}
 
         n_tasks = len(tasks)
 
-        # Trivial case: population-based search adds no value for a single task.
         if n_tasks == 1:
-            assignments, best_fitness = self._decode([0], tasks, agents)
+            agent_queues, best_fitness = self._decode([0], tasks, agents)
             elapsed_ms = (time.perf_counter() - start_time) * 1000.0
             self.last_run_stats = {
                 'allocator_type': 'ga',
                 'ga_allocation_time_ms': round(elapsed_ms, 3),
                 'generations_run': 0, 'best_fitness': best_fitness, 'converged_at': 0
             }
-            return assignments
+            return agent_queues
 
-        # ---------------- Initialise population ----------------
+        # Initialise population
         population = [self._random_chromosome(n_tasks) for _ in range(self.population_size)]
 
         best_chromosome = None
         best_fitness = float('inf')
-        best_assignments = {}
+        best_queues = {}
         generations_since_improvement = 0
         converged_at = self.generations
 
@@ -236,7 +251,7 @@ class HeterogeneousGA:
             if fitnesses[gen_best_idx] < best_fitness:
                 best_fitness = fitnesses[gen_best_idx]
                 best_chromosome = population[gen_best_idx][:]
-                best_assignments = decoded[gen_best_idx][0]
+                best_queues = decoded[gen_best_idx][0]
                 generations_since_improvement = 0
             else:
                 generations_since_improvement += 1
@@ -245,11 +260,11 @@ class HeterogeneousGA:
                 converged_at = gen
                 break
 
-            # ---------------- Elitism ----------------
+            # Elitism
             elite_idx = sorted(range(len(population)), key=lambda i: fitnesses[i])[:self.elite_count]
             new_population = [population[i][:] for i in elite_idx]
 
-            # ---------------- Reproduce ----------------
+            # Reproduce
             while len(new_population) < self.population_size:
                 parent_a = self._tournament_select(population, fitnesses)
                 parent_b = self._tournament_select(population, fitnesses)
@@ -274,4 +289,5 @@ class HeterogeneousGA:
             'population_size': self.population_size,
         }
 
-        return best_assignments
+        return best_queues
+

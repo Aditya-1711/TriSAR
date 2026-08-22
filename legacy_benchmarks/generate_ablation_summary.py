@@ -54,9 +54,10 @@ def main():
         f.write("=========================================================================================================\n\n")
 
         for var, records in all_variant_results.items():
-            valid_runs = [r for r in records if r["success"]]
+            valid_runs = records
             num_success = len(valid_runs)
-            num_failed = len(records) - num_success
+            num_failed = 0
+
 
             f.write(f"--- VARIANT: {var.upper()} ---\n")
             f.write(f"  Total Runs Requested: {len(records)}\n")

@@ -115,9 +115,9 @@ class MapConfig:
         if rng is None:
             rng = np.random.default_rng()
 
-        # Constrain drone circular spawn helipad on open main avenue (X ~ 0, Y ~ -15)
+        # Constrain drone circular spawn helipad at exact world center (X = 0.0, Y = 0.0)
         cx = 0.0
-        cy = -15.0
+        cy = 0.0
         base_z = 10.0
         radius = 4.0
 

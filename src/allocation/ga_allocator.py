@@ -21,18 +21,21 @@ class HeterogeneousGA:
         variant = os.environ.get("TRISAR_VARIANT", "full")
 
         if variant in ["no_ga", "floor"]:
-            assignments = {}
+            agent_queues = {agent_id: [] for agent_id in self.bb.agent_states.keys()}
             unassigned_victim_ids = list(self.bb.victims.keys())
-            assigned_agent_ids = set()
+            assigned_agent_ids_in_round = set()
 
             for victim_id in unassigned_victim_ids:
+                if len(assigned_agent_ids_in_round) >= len(self.bb.agent_states):
+                    assigned_agent_ids_in_round.clear()
+
                 v = self.bb.victims[victim_id]
                 v_pos = np.array(v['pos'], dtype=float)
                 best_agent = None
                 best_dist = float('inf')
 
                 for agent_id, agent in self.bb.agent_states.items():
-                    if agent_id in assigned_agent_ids:
+                    if agent_id in assigned_agent_ids_in_round:
                         continue
                     a_pos = np.array(agent.pos, dtype=float)
                     dist = float(np.linalg.norm(a_pos - v_pos))
@@ -41,8 +44,8 @@ class HeterogeneousGA:
                         best_agent = agent
 
                 if best_agent is not None:
-                    assignments[victim_id] = best_agent.id
-                    assigned_agent_ids.add(best_agent.id)
+                    agent_queues[best_agent.id].append(victim_id)
+                    assigned_agent_ids_in_round.add(best_agent.id)
 
             elapsed_ms = (time.perf_counter() - start_time) * 1000.0
             self.last_run_stats = {
@@ -50,10 +53,14 @@ class HeterogeneousGA:
                 'ga_allocation_time_ms': round(elapsed_ms, 3),
                 'generations_run': 0,
             }
-            return assignments
+            return agent_queues
 
-        agents = list(self.bb.agent_states.values())
+        relay_ids = {'UAV_4', 'UAV_5'}
+        agents = [a for a in self.bb.agent_states.values() if getattr(a, 'id', '') not in relay_ids]
+        if not agents:
+            agents = list(self.bb.agent_states.values())
         tasks = []
+
         for tid, t in self.bb.threats.items():
             task_type = 'rooftop_rescue' if t['pos'][2] > 2 else 'ground_rescue'
             tasks.append((tid, t['pos'], task_type, t.get('urgency', 5)))
@@ -68,19 +75,19 @@ class HeterogeneousGA:
                 'ga_allocation_time_ms': round(elapsed_ms, 3),
                 'generations_run': 0, 'best_fitness': None, 'converged_at': None
             }
-            return {}
+            return {a.id: [] for a in agents}
 
         n_tasks = len(tasks)
 
         if n_tasks == 1:
-            assignments, best_fitness = self._decode([0], tasks, agents)
+            agent_queues, best_fitness = self._decode([0], tasks, agents)
             elapsed_ms = (time.perf_counter() - start_time) * 1000.0
             self.last_run_stats = {
                 'allocator_type': 'ga',
                 'ga_allocation_time_ms': round(elapsed_ms, 3),
                 'generations_run': 0, 'best_fitness': best_fitness, 'converged_at': 0
             }
-            return assignments
+            return agent_queues
 
         n_agents = len(agents)
         population = [self.rng.integers(0, n_agents, size=n_tasks).tolist() for _ in range(self.pop_size)]
@@ -137,27 +144,41 @@ class HeterogeneousGA:
         }
 
         if best_chrom is None:
-            return {}
+            return {a.id: [] for a in agents}
 
-        final_assignments, _ = self._decode(best_chrom, tasks, agents)
-        return final_assignments
+        final_queues, _ = self._decode(best_chrom, tasks, agents)
+        return final_queues
 
     def _decode(self, chrom, tasks, agents):
-        assignments = {}
+        agent_queues = {agent.id: [] for agent in agents}
+        assigned_agent_ids_in_round = set()
         total_dist = 0.0
 
-        for task_idx, agent_idx in enumerate(chrom):
+        for task_idx in chrom:
             if task_idx >= len(tasks):
                 break
             task_id, task_pos, _, _ = tasks[task_idx]
-            agent = agents[agent_idx % len(agents)]
 
-            dist = np.linalg.norm(np.array(agent.pos) - np.array(task_pos))
-            total_dist += dist
-            assignments[task_id] = agent.id
+            if len(assigned_agent_ids_in_round) >= len(agents):
+                assigned_agent_ids_in_round.clear()
+
+            best_agent = None
+            best_dist = float('inf')
+            for agent in agents:
+                if agent.id in assigned_agent_ids_in_round:
+                    continue
+                dist = np.linalg.norm(np.array(agent.pos) - np.array(task_pos))
+                if dist < best_dist:
+                    best_dist = dist
+                    best_agent = agent
+
+            if best_agent is not None:
+                agent_queues[best_agent.id].append(task_id)
+                assigned_agent_ids_in_round.add(best_agent.id)
+                total_dist += best_dist
 
         fitness = -total_dist
-        return assignments, fitness
+        return agent_queues, fitness
 
     def _tournament_selection(self, population, fitnesses, k=3):
         selected = []
@@ -182,3 +203,4 @@ class HeterogeneousGA:
             if self.rng.random() < self.mut_rate:
                 mutated[i] = int(self.rng.integers(0, n_agents))
         return mutated
+

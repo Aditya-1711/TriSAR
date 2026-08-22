@@ -9,7 +9,10 @@ in a 3D scatter plot.
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+try:
+    from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+except (ImportError, ModuleNotFoundError):
+    pass
 
 from trishield_gym.backends.base import DroneState, MissionStatus
 

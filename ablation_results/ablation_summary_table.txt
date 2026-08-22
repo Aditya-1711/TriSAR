@@ -1,0 +1,68 @@
+=========================================================================================================
+                          TRISAR MULTI-AGENT ABLATION STUDY BENCHMARK SUMMARY REPORT                     
+=========================================================================================================
+
+--- VARIANT: FULL ---
+  Total Runs Requested: 30
+  Successful Runs     : 30 (100.0%)
+  Failed/Timed Out    : 0
+
+  Metric                      Mean         Std Dev      Min          Max
+  -----------------------------------------------------------------------
+  Execution Steps           : 179.07       34.15        111.00       236.00      
+  Episode Reward            : -992.08      373.22       -1663.93     -396.10     
+  Total Path Length (m)     : 355.85       26.74        280.88       402.70      
+  Total Collisions          : 0.00         0.00         0.00         0.00        
+  Total Energy (%)          : 96.85        17.12        67.13        129.90      
+  Wall-Clock Time (s)       : 3.62         1.04         2.60         7.78        
+
+---------------------------------------------------------------------------
+
+--- VARIANT: NO_GA ---
+  Total Runs Requested: 30
+  Successful Runs     : 30 (100.0%)
+  Failed/Timed Out    : 0
+
+  Metric                      Mean         Std Dev      Min          Max
+  -----------------------------------------------------------------------
+  Execution Steps           : 173.77       7.46         158.00       186.00      
+  Episode Reward            : -897.41      56.48        -1028.60     -788.48     
+  Total Path Length (m)     : 360.39       3.14         355.00       366.91      
+  Total Collisions          : 0.00         0.00         0.00         0.00        
+  Total Energy (%)          : 92.86        1.94         89.19        99.20       
+  Wall-Clock Time (s)       : 3.17         0.22         2.86         3.85        
+
+---------------------------------------------------------------------------
+
+--- VARIANT: NO_REPULSION ---
+  Total Runs Requested: 30
+  Successful Runs     : 30 (100.0%)
+  Failed/Timed Out    : 0
+
+  Metric                      Mean         Std Dev      Min          Max
+  -----------------------------------------------------------------------
+  Execution Steps           : 152.63       11.20        112.00       167.00      
+  Episode Reward            : -682.81      122.13       -901.90      -360.61     
+  Total Path Length (m)     : 331.35       12.70        281.26       349.26      
+  Total Collisions          : 2.70         3.22         0.00         11.00       
+  Total Energy (%)          : 71.81        3.50         59.21        76.45       
+  Wall-Clock Time (s)       : 1.65         0.37         1.43         3.50        
+
+---------------------------------------------------------------------------
+
+--- VARIANT: FLOOR ---
+  Total Runs Requested: 30
+  Successful Runs     : 30 (100.0%)
+  Failed/Timed Out    : 0
+
+  Metric                      Mean         Std Dev      Min          Max
+  -----------------------------------------------------------------------
+  Execution Steps           : 160.30       3.23         154.00       168.00      
+  Episode Reward            : -746.93      48.56        -886.29      -647.02     
+  Total Path Length (m)     : 347.77       2.76         342.15       354.00      
+  Total Collisions          : 3.03         1.96         0.00         10.00       
+  Total Energy (%)          : 74.80        1.55         72.12        77.83       
+  Wall-Clock Time (s)       : 1.53         0.09         1.44         1.86        
+
+---------------------------------------------------------------------------
+

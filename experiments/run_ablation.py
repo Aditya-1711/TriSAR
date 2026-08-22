@@ -21,9 +21,10 @@ def main():
     print("  TriSAR Automated 30-Episode Ablation Benchmark Runner")
     print("=" * 70)
 
-    cmd = [sys.executable, os.path.join(repo_root, "ablation_study.py")]
+    cmd = [sys.executable, os.path.join(repo_root, "legacy_benchmarks", "ablation_study.py")]
     res = subprocess.run(cmd, cwd=repo_root)
     sys.exit(res.returncode)
+
 
 if __name__ == "__main__":
     main()

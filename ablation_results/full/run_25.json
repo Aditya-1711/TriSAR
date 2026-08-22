@@ -1,0 +1,64 @@
+{
+  "episode": {
+    "total_steps": 151,
+    "total_reward": -674.18,
+    "total_path_length": 337.49,
+    "total_collisions": 0,
+    "total_energy_consumed": 82.22,
+    "mission_completed": true,
+    "wall_time_seconds": 3.22,
+    "ga_allocation_time_ms": 78.186
+  },
+  "drones": {
+    "UAV_1": {
+      "path_length": 105.07,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 26.36,
+      "final_battery": 73.64,
+      "average_speed": 7.0,
+      "max_speed": 15.0,
+      "tasks_completed": 3
+    },
+    "UAV_2": {
+      "path_length": 60.38,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 16.19,
+      "final_battery": 83.81,
+      "average_speed": 4.05,
+      "max_speed": 14.98,
+      "tasks_completed": 2
+    },
+    "UAV_3": {
+      "path_length": 103.96,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 21.39,
+      "final_battery": 78.61,
+      "average_speed": 6.92,
+      "max_speed": 15.0,
+      "tasks_completed": 2
+    },
+    "UAV_4": {
+      "path_length": 34.13,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 8.67,
+      "final_battery": 91.33,
+      "average_speed": 2.29,
+      "max_speed": 10.24,
+      "tasks_completed": 1
+    },
+    "UAV_5": {
+      "path_length": 33.96,
+      "collisions": 0,
+      "collision_events": [],
+      "energy_consumed": 9.61,
+      "final_battery": 90.39,
+      "average_speed": 2.31,
+      "max_speed": 10.53,
+      "tasks_completed": 1
+    }
+  }
+}
